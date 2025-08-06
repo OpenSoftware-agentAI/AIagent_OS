@@ -24,4 +24,23 @@ export class ExcelTool {
 
     return data;
   }
+
+  printWrongCounts(): void {
+    const data = this.readDailyTest();
+
+    // 헤더는 첫 행, 이후부터 학생별 데이터
+    const header = data[0];
+    const totalProblems = header.length - 1; // 문제 개수 (이름 제외)
+
+    for (let i = 1; i < data.length; i++) {
+      const row = data[i];
+      const name = row[0];
+      const answers = row.slice(1);
+
+      // 각 행에서 "X" 개수 세기
+      const wrongCount = answers.filter((a) => a === "X").length;
+
+      console.log(`${name} : 틀린 문제 개수는 ${wrongCount}개 입니다.`);
+    }
+  }
 }
