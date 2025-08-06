@@ -4,13 +4,17 @@
   "description": "2025오픈소스 개발자대회 출품작",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start:dev": "NODE_OPTIONS=--no-deprecation ts-node src/main.ts",
+    "read-daily-test": "NODE_OPTIONS=--no-deprecation ts-node src/readDailyTest.ts",
+    "start": "NODE_OPTIONS=--no-deprecation node dist/main.js",
     "prepare": "ts-patch install"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/xlsx": "^0.0.36",
     "ts-node": "^10.9.2",
     "ts-patch": "^3.3.0",
     "typescript": "~5.9.2"
