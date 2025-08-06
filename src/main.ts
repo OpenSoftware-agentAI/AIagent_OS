@@ -2,6 +2,7 @@
 import { Agentica } from "@agentica/core";
 import { OpenAI } from "openai";
 import { DateTool, WeatherTool } from "./tools";
+import { ExcelTool } from "./tools/ExcelTool";
 import typia from "typia";
 import readline from "readline";
 import dotenv from "dotenv";
@@ -24,6 +25,12 @@ async function main() {
     },
     // Controller에 Tool을 입력할 수 있다.
     controllers: [
+      {
+        name: "Excel Tool",
+        protocol: "class",
+        application: typia.llm.application<ExcelTool, "chatgpt">(),
+        execute: new ExcelTool(),
+      },
       {
         name: "Date Tool", // 컨트롤러 이름 설정
         protocol: "class", // 형식 설정. http, class가 존재한다.
