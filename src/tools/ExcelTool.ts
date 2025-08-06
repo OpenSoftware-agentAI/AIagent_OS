@@ -40,7 +40,14 @@ export class ExcelTool {
       // 각 행에서 "X" 개수 세기
       const wrongCount = answers.filter((a) => a === "X").length;
 
-      console.log(`${name} : 틀린 문제 개수는 ${wrongCount}개 입니다.`);
+      // '미응시' 개수가 있으면 출력 메시지 별도 처리
+      const noShowCount = answers.filter((a) => a === "미응시").length;
+
+      if (noShowCount > 0) {
+        console.log(`${name} : 미응시 입니다.`);
+      } else {
+        console.log(`${name} : 틀린 문제 개수는 ${wrongCount}개 입니다.`);
+      }
     }
   }
 }
