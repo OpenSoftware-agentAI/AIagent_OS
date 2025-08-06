@@ -1,0 +1,12 @@
+{
+  "name": "aiagent_os",
+  "version": "1.0.0",
+  "description": "2025오픈소스 개발자대회 출품작",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
