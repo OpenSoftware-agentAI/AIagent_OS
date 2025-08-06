@@ -4,12 +4,22 @@
   "description": "2025오픈소스 개발자대회 출품작",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "ts-patch install"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^5.9.2"
+    "ts-node": "^10.9.2",
+    "ts-patch": "^3.3.0",
+    "typescript": "~5.9.2"
+  },
+  "dependencies": {
+    "@agentica/core": "^0.30.8",
+    "@samchon/openapi": "^4.7.1",
+    "dotenv": "^17.2.1",
+    "openai": "^5.12.0",
+    "typia": "^9.6.1"
   }
 }
