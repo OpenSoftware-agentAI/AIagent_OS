@@ -99,8 +99,9 @@ export class ExcelTool {
       const wrongProblems: { num: number; desc: string }[] = [];
       answers.forEach((ans, idx) => {
         if (ans === "X") {
-          // 설명을 explanations 배열에서 가져오기 (idx는 문제 번호 -1)
-          const desc = explanations[idx] || `${idx + 1}번 문제`;
+          // explanations[idx]에서 앞 번호(숫자. 공백) 제거
+          let desc = explanations[idx] || `${idx + 1}번 문제`;
+          desc = desc.replace(/^\d+\.\s*/, ""); // 정규식으로 "숫자. " 제거
           wrongProblems.push({ num: idx + 1, desc });
         }
       });
