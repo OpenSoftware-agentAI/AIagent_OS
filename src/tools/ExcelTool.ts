@@ -43,10 +43,15 @@ export class ExcelTool {
       // '미응시' 개수가 있으면 출력 메시지 별도 처리
       const noShowCount = answers.filter((a) => a === "미응시").length;
 
+      // 이름에서 성을 빼고 나머지 이름만 추출 (예: 박정환 -> 정환)
+      const shortName = name.length > 1 ? name.slice(1) : name;
+
       if (noShowCount > 0) {
-        console.log(`${name} : 미응시 입니다.`);
+        console.log(`${shortName}이는 미응시 입니다.`);
       } else {
-        console.log(`${name} : 틀린 문제 개수는 ${wrongCount}개 입니다.`);
+        console.log(
+          `${shortName}이는 ${totalProblems}문제 중에서 ${wrongCount}문제가 오답이었습니다.`
+        );
       }
     }
   }
