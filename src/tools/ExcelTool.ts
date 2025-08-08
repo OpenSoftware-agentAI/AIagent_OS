@@ -97,28 +97,44 @@ export class ExcelTool {
       }
 
       const wrongProblems: { num: number; desc: string }[] = [];
+      const correctProblems: { num: number; desc: string }[] = [];
+
       answers.forEach((ans, idx) => {
+        // 문제 설명에서 앞 번호 제거
+        let desc = explanations[idx] || `${idx + 1}번 문제`;
+        desc = desc.replace(/^\d+\.\s*/, "");
+
         if (ans === "X") {
-          // explanations[idx]에서 앞 번호(숫자. 공백) 제거
-          let desc = explanations[idx] || `${idx + 1}번 문제`;
-          desc = desc.replace(/^\d+\.\s*/, ""); // 정규식으로 "숫자. " 제거
           wrongProblems.push({ num: idx + 1, desc });
+        } else if (ans === "O") {
+          correctProblems.push({ num: idx + 1, desc });
         }
       });
 
       if (wrongProblems.length === 0) {
+        // 모두 맞춤
         console.log(`${shortName} 학생은 모든 문제를 맞췄습니다.`);
-      } else {
-        // 오답 문제 설명만을 나열
-        // 예: "기부액이 일정 금액 이상이기 위해 몇 개를 판매해야 하는지 구하는 문제(1번), 시속과 관련한 문제(2번), ..."
-        const problemsText = wrongProblems
-          .map((p) => `${p.desc}(${p.num}번)`)
-          .join(", ");
-
-        console.log(
-          `${shortName} 학생은 ${answers.length}문제 중에서 ${wrongProblems.length}문제가 오답이었습니다. ${problemsText} 문제에서 실수가 있었습니다.`
-        );
+        continue;
       }
+
+      // 틀린 문제 설명 나열
+      const wrongText = wrongProblems
+        .map((p) => `${p.desc}(${p.num}번)`)
+        .join(", ");
+
+      // 맞은 문제 설명 나열
+      const correctText = correctProblems
+        .map((p) => `${p.desc}(${p.num}번)`)
+        .join(", ");
+
+      // 최종 문장 조립
+      // 예: "정환 학생은 5문제 중에서 2문제가 오답이었습니다. 기부액이 일정 금액 이상이기 위해 몇 개를 판매해야 하는 문제(1번), 시속과 관련한 문제(2번) 문제에서 실수가 있었습니다. 그러나 최대 구매 가능 개수 구하는 문제(3번), 식의 값을 조건에 맞게 만드는 문제(5번) 문제는 올바르게 풀었습니다."
+      console.log(
+        `${shortName} 학생은 ${answers.length}문제 중에서 ${wrongProblems.length}문제가 오답이었습니다. ${wrongText} 문제에서 실수가 있었습니다.` +
+          (correctProblems.length > 0
+            ? ` 그러나 ${correctText} 문제는 올바르게 풀었습니다.`
+            : "")
+      );
     }
   }
 }
