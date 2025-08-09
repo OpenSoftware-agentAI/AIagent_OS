@@ -8,9 +8,12 @@ export class ExcelTool {
   private endingCommentPath: string;
 
   constructor() {
-    this.filePath = path.join(__dirname, "../data.xlsm");
-    this.explanationPath = path.join(__dirname, "../explanation.txt");
-    this.endingCommentPath = path.join(__dirname, "../endingComment.txt");
+    this.filePath = path.join(__dirname, "../assets/data.xlsm");
+    this.explanationPath = path.join(__dirname, "../assets/explanation.txt");
+    this.endingCommentPath = path.join(
+      __dirname,
+      "../assets/endingComment.txt"
+    );
   }
 
   /**
