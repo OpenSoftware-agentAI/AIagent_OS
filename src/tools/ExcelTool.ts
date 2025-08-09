@@ -9,7 +9,7 @@ export class ExcelTool {
   private encouragementsPath: string;
 
   constructor() {
-    this.filePath = path.join(__dirname, "../assets/data_2.xlsm");
+    this.filePath = path.join(__dirname, "../assets/data.xlsm");
     this.explanationPath = path.join(__dirname, "../assets/explanation.txt");
     this.endingCommentPath = path.join(
       __dirname,
