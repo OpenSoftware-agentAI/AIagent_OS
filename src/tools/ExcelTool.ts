@@ -109,7 +109,7 @@ export class ExcelTool {
 
       answers.forEach((ans, idx) => {
         let desc = explanations[idx] || `${idx + 1}번 문제`;
-        desc = desc.replace(/^\d+\.\s*/, ""); // 번호 제거 예: "1. ~" -> "~"
+        desc = desc.replace(/^\d+\.\s*/, ""); // 번호 제거 예: "1. 문제내용" → "문제내용"
 
         if (ans === "X") {
           wrongProblems.push({ num: idx + 1, desc });
@@ -118,26 +118,38 @@ export class ExcelTool {
         }
       });
 
-      if (wrongProblems.length === 0) {
-        console.log(
-          `${shortName} 학생은 모든 문제를 맞췄습니다.${
-            randomEnding ? " " + randomEnding : ""
-          }`
-        );
-        continue;
-      }
-
+      // 오답 문제 피드백 출력
       const wrongText = wrongProblems
         .map((p) => `${p.desc}(${p.num}번)`)
         .join(", ");
+
       const correctText = correctProblems
         .map((p) => `${p.desc}(${p.num}번)`)
         .join(", ");
 
-      let output = `${shortName} 학생은 ${totalProblems}문제 중에서 ${wrongProblems.length}문제가 오답이었습니다. ${wrongText} 문제에서 실수가 있었습니다.`;
+      if (wrongProblems.length === 0) {
+        const correctText = correctProblems
+          .map((p) => `${p.desc}(${p.num}번)`)
+          .join(", ");
+
+        let output = `${shortName} 학생은 모든 문제를 맞췄습니다.`;
+
+        if (correctText.length > 0) {
+          output += ` ${correctText} 를 모두 올바르게 풀었습니다.`;
+        }
+
+        if (randomEnding) {
+          output += ` ${randomEnding}`;
+        }
+
+        console.log(output);
+        continue;
+      }
+
+      let output = `${shortName} 학생은 ${totalProblems}문제 중에서 ${wrongProblems.length}문제가 오답이었습니다. ${wrongText} 에서 실수가 있었습니다.`;
 
       if (correctProblems.length > 0) {
-        output += ` 그러나 ${correctText} 문제는 올바르게 풀었습니다.`;
+        output += ` 그러나 ${correctText} 는 올바르게 풀었습니다.`;
       }
 
       if (randomEnding) {
