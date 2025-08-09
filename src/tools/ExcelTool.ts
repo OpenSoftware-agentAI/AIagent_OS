@@ -6,13 +6,18 @@ export class ExcelTool {
   private filePath: string;
   private explanationPath: string;
   private endingCommentPath: string;
+  private encouragementsPath: string;
 
   constructor() {
-    this.filePath = path.join(__dirname, "../assets/data.xlsm");
+    this.filePath = path.join(__dirname, "../assets/data_2.xlsm");
     this.explanationPath = path.join(__dirname, "../assets/explanation.txt");
     this.endingCommentPath = path.join(
       __dirname,
       "../assets/endingComment.txt"
+    );
+    this.encouragementsPath = path.join(
+      __dirname,
+      "../assets/encouragementsComment.txt"
     );
   }
 
@@ -32,9 +37,6 @@ export class ExcelTool {
     return data;
   }
 
-  /**
-   * 엑셀 파일의 G15:K19 범위를 읽어서 출제 범위 문자열 배열로 반환
-   */
   readTestRanges(): string[] {
     const workbook = xlsx.readFile(this.filePath);
     const sheetName = workbook.SheetNames[0];
@@ -45,25 +47,20 @@ export class ExcelTool {
       header: 1,
     }) as string[][];
 
-    // 2차원 배열을 평탄화 후 문자열 처리
     const flat = data
       .flat()
       .map((v) =>
         String(v)
-          .replace(/[\r\n]+/g, " ") // 줄바꿈 제거, 공백으로 대체
+          .replace(/[\r\n]+/g, " ")
           .trim()
       )
       .filter((v) => v.length > 0);
 
-    // 중복 제거
     const uniqueRanges = Array.from(new Set(flat));
 
     return uniqueRanges;
   }
 
-  /**
-   * explanation.txt 파일의 각 줄을 문제 설명으로 읽어 배열로 반환
-   */
   readExplanations(): string[] {
     try {
       const file = fs.readFileSync(this.explanationPath, "utf-8");
@@ -77,9 +74,6 @@ export class ExcelTool {
     }
   }
 
-  /**
-   * endingComment.txt 파일을 읽어서 여러 줄(마무리 멘트) 배열로 반환
-   */
   readEndingComments(): string[] {
     try {
       const file = fs.readFileSync(this.endingCommentPath, "utf-8");
@@ -93,23 +87,39 @@ export class ExcelTool {
     }
   }
 
-  /**
-   * 랜덤으로 마무리 멘트 한 개를 선택해 반환
-   */
   private getRandomEndingComment(comments: string[]): string {
     if (comments.length === 0) return "";
     const randomIndex = Math.floor(Math.random() * comments.length);
     return comments[randomIndex];
   }
 
-  /**
-   * 학생별 시험 결과를 바탕으로 틀린 문제에 대해 문제 설명 포함 피드백 생성 및 출력
-   * 각 학생 피드백 끝에 랜덤 마무리 멘트 덧붙임
-   */
+  readEncouragementComments(): string[] {
+    try {
+      const file = fs.readFileSync(this.encouragementsPath, "utf-8");
+      return file
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0);
+    } catch (error) {
+      console.warn(
+        "encouragementsComment.txt 파일을 읽는 중 오류 발생:",
+        error
+      );
+      return [];
+    }
+  }
+
+  private getRandomEncouragementComment(comments: string[]): string {
+    if (comments.length === 0) return "";
+    const randomIndex = Math.floor(Math.random() * comments.length);
+    return comments[randomIndex];
+  }
+
   printFeedbacks(): void {
     const data = this.readDailyTest();
     const explanations = this.readExplanations();
     const endingComments = this.readEndingComments();
+    const encouragementComments = this.readEncouragementComments();
     const testRanges = this.readTestRanges();
 
     if (data.length === 0) {
@@ -127,6 +137,9 @@ export class ExcelTool {
 
       const noShowCount = answers.filter((a) => a === "미응시").length;
       const randomEnding = this.getRandomEndingComment(endingComments);
+      const randomEncouragement = this.getRandomEncouragementComment(
+        encouragementComments
+      );
 
       if (noShowCount > 0) {
         console.log(`${shortName} 학생은 시험에 미응시하였습니다.`);
@@ -138,7 +151,7 @@ export class ExcelTool {
 
       answers.forEach((ans, idx) => {
         let desc = explanations[idx] || `${idx + 1}번 문제`;
-        desc = desc.replace(/^\d+\.\s*/, ""); // 번호 제거 예: "1. 문제내용" → "문제내용"
+        desc = desc.replace(/^\d+\.\s*/, "");
 
         if (ans === "X") {
           wrongProblems.push({ num: idx + 1, desc });
@@ -154,42 +167,47 @@ export class ExcelTool {
         )} 범위 내에서 출제되었습니다. `;
       }
 
-      // 오답 문제 피드백 출력
-      const wrongText = wrongProblems
-        .map((p) => `${p.desc}(${p.num}번)`)
-        .join(", ");
-
-      const correctText = correctProblems
-        .map((p) => `${p.desc}(${p.num}번)`)
-        .join(", ");
-
+      // 오답 없는 경우
       if (wrongProblems.length === 0) {
         const correctText = correctProblems
           .map((p) => `${p.desc}(${p.num}번)`)
           .join(", ");
-
         output += `${shortName} 학생은 모든 문제를 맞췄습니다.`;
-
         if (correctText.length > 0) {
           output += ` ${correctText} 를 모두 올바르게 풀었습니다.`;
         }
-
-        if (randomEnding) {
-          output += ` ${randomEnding}`;
-        }
-
+        output += ` ${randomEnding}`;
         console.log(output);
         continue;
       }
 
-      output += `${shortName} 학생은 ${totalProblems}문제 중에서 ${wrongProblems.length}문제가 오답이었습니다. ${wrongText} 에서 실수가 있었습니다.`;
+      // 오답이 있는 경우
+      const wrongText = wrongProblems
+        .map((p) => `${p.desc}(${p.num}번)`)
+        .join(", ");
+      const correctText = correctProblems
+        .map((p) => `${p.desc}(${p.num}번)`)
+        .join(", ");
 
-      if (correctProblems.length > 0) {
-        output += ` 그러나 ${correctText} 는 올바르게 풀었습니다.`;
+      // 1, 2개 문제 틀린 경우
+      if (wrongProblems.length <= 3) {
+        output += `${shortName} 학생은 ${totalProblems}문제 중에서 ${wrongProblems.length}문제가 오답이었습니다. ${wrongText} 에서 실수가 있었습니다.`;
+
+        if (correctProblems.length > 0) {
+          output += ` 그러나 ${correctText} 는 올바르게 풀었습니다.`;
+        }
+
+        output += ` ${randomEnding}`;
       }
 
-      if (randomEnding) {
-        output += ` ${randomEnding}`;
+      // 3개 이상(과반수 이상) 틀린 경우
+      else {
+        output += `${shortName} 학생은 오늘 데일리테스트를 어려워했습니다. ${wrongText} 에서 실수가 있었습니다.`;
+        if (correctProblems.length > 0) {
+          output += ` 그러나 ${correctText} 는 올바르게 풀었습니다.`;
+        }
+
+        output += ` ${randomEncouragement}`;
       }
 
       console.log(output);
@@ -199,11 +217,11 @@ export class ExcelTool {
   /**
    * 확인용: 문제 설명 리스트 출력
    */
-  testPrintExplanations(): void {
-    const explanations = this.readExplanations();
-    console.log("=== 문제 설명 리스트 ===");
-    explanations.forEach((desc, idx) => {
-      console.log(`${idx + 1}번 문제: ${desc}`);
-    });
-  }
+  // testPrintExplanations(): void {
+  //   const explanations = this.readExplanations();
+  //   console.log("=== 문제 설명 리스트 ===");
+  //   explanations.forEach((desc, idx) => {
+  //     console.log(`${idx + 1}번 문제: ${desc}`);
+  //   });
+  // }
 }
