@@ -30,6 +30,35 @@ export class ExcelTool {
   }
 
   /**
+   * 엑셀 파일의 G15:K19 범위를 읽어서 출제 범위 문자열 배열로 반환
+   */
+  readTestRanges(): string[] {
+    const workbook = xlsx.readFile(this.filePath);
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+
+    const data = xlsx.utils.sheet_to_json(worksheet, {
+      range: "G15:K19",
+      header: 1,
+    }) as string[][];
+
+    // 2차원 배열을 평탄화 후 문자열 처리
+    const flat = data
+      .flat()
+      .map((v) =>
+        String(v)
+          .replace(/[\r\n]+/g, " ") // 줄바꿈 제거, 공백으로 대체
+          .trim()
+      )
+      .filter((v) => v.length > 0);
+
+    // 중복 제거
+    const uniqueRanges = Array.from(new Set(flat));
+
+    return uniqueRanges;
+  }
+
+  /**
    * explanation.txt 파일의 각 줄을 문제 설명으로 읽어 배열로 반환
    */
   readExplanations(): string[] {
@@ -78,6 +107,7 @@ export class ExcelTool {
     const data = this.readDailyTest();
     const explanations = this.readExplanations();
     const endingComments = this.readEndingComments();
+    const testRanges = this.readTestRanges();
 
     if (data.length === 0) {
       console.log("엑셀 데이터가 비어있습니다.");
@@ -96,11 +126,7 @@ export class ExcelTool {
       const randomEnding = this.getRandomEndingComment(endingComments);
 
       if (noShowCount > 0) {
-        console.log(
-          `${shortName} 학생은 시험에 미응시하였습니다.${
-            randomEnding ? " " + randomEnding : ""
-          }`
-        );
+        console.log(`${shortName} 학생은 시험에 미응시하였습니다.`);
         continue;
       }
 
@@ -118,6 +144,13 @@ export class ExcelTool {
         }
       });
 
+      let output = "";
+      if (testRanges.length > 0) {
+        output += `오늘 데일리테스트는 ${testRanges.join(
+          ", "
+        )} 범위 내에서 출제되었습니다. `;
+      }
+
       // 오답 문제 피드백 출력
       const wrongText = wrongProblems
         .map((p) => `${p.desc}(${p.num}번)`)
@@ -132,7 +165,7 @@ export class ExcelTool {
           .map((p) => `${p.desc}(${p.num}번)`)
           .join(", ");
 
-        let output = `${shortName} 학생은 모든 문제를 맞췄습니다.`;
+        output += `${shortName} 학생은 모든 문제를 맞췄습니다.`;
 
         if (correctText.length > 0) {
           output += ` ${correctText} 를 모두 올바르게 풀었습니다.`;
@@ -146,7 +179,7 @@ export class ExcelTool {
         continue;
       }
 
-      let output = `${shortName} 학생은 ${totalProblems}문제 중에서 ${wrongProblems.length}문제가 오답이었습니다. ${wrongText} 에서 실수가 있었습니다.`;
+      output += `${shortName} 학생은 ${totalProblems}문제 중에서 ${wrongProblems.length}문제가 오답이었습니다. ${wrongText} 에서 실수가 있었습니다.`;
 
       if (correctProblems.length > 0) {
         output += ` 그러나 ${correctText} 는 올바르게 풀었습니다.`;
