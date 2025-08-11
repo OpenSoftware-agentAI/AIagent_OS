@@ -5,16 +5,19 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start:dev": "NODE_OPTIONS=--no-deprecation ts-node src/main.ts",
-    "read-daily-test": "NODE_OPTIONS=--no-deprecation ts-node src/readDailyTest.ts",
-    "start": "NODE_OPTIONS=--no-deprecation node dist/main.js",
+    "start:dev": "cross-env NODE_OPTIONS=--no-deprecation ts-node src/main.ts",
+    "read-daily-test": "cross-env NODE_OPTIONS=--no-deprecation ts-node src/readDailyTest.ts",
+    "start": "cross-env NODE_OPTIONS=--no-deprecation node dist/main.js",
     "prepare": "ts-patch install"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.2.1",
     "@types/xlsx": "^0.0.36",
+    "cross-env": "^10.0.0",
     "ts-node": "^10.9.2",
     "ts-patch": "^3.3.0",
     "typescript": "~5.9.2"
@@ -22,8 +25,11 @@
   "dependencies": {
     "@agentica/core": "^0.30.8",
     "@samchon/openapi": "^4.7.1",
+    "body-parser": "^2.2.0",
     "dotenv": "^17.2.1",
+    "express": "^5.1.0",
     "openai": "^5.12.0",
+    "solapi": "^5.5.1",
     "typia": "^9.6.1",
     "xlsx": "^0.18.5"
   }
