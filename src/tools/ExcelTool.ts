@@ -1,12 +1,16 @@
 import { ExcelReaders } from "./readers/excel.types";
 import { ExcelFileReader } from "./readers/excel.reader";
+import * as fs from "fs";
+import * as path from "path";
 
 export class ExcelTool {
   constructor(private readers: ExcelReaders = ExcelFileReader) {}
+
   private pickRandom(list: string[]) {
     if (!list.length) return "";
     return list[Math.floor(Math.random() * list.length)];
   }
+
   printFeedbacks(): void {
     const data = this.readers.readDailyTest();
     const explanations = this.readers.readExplanations();
@@ -14,9 +18,13 @@ export class ExcelTool {
     const encouragementComments = this.readers.readEncouragementComments();
     const testRanges = this.readers.readTestRanges();
 
+    // 결과 누적 배열
+    const outputLines: string[] = [];
+
     if (data.length === 0) {
-      console.log("엑셀 데이터가 비어있습니다.");
-      return;
+      const msg = "엑셀 데이터가 비어있습니다.";
+      console.log(msg);
+      outputLines.push(msg);
     }
 
     const totalProblems = data[0].length - 1;
@@ -39,6 +47,7 @@ export class ExcelTool {
       if (noShowCount > 0) {
         output += `${shortName} 학생은 시험에 미응시하였습니다.`;
         console.log(output);
+        outputLines.push(output);
         continue;
       }
 
@@ -69,6 +78,7 @@ export class ExcelTool {
         }
         output += ` ${randomEnding}`;
         console.log(output);
+        outputLines.push(output);
         continue;
       }
 
@@ -97,6 +107,18 @@ export class ExcelTool {
       }
 
       console.log(output);
+      outputLines.push(output);
     }
+
+    // === 최종 결과 저장 ===
+    const assetsDir = path.resolve(__dirname, "../assets");
+    if (!fs.existsSync(assetsDir)) {
+      fs.mkdirSync(assetsDir, { recursive: true });
+    }
+
+    const filePath = path.join(assetsDir, "finalComment.txt");
+    fs.writeFileSync(filePath, outputLines.join("\n\n"), "utf-8");
+
+    console.log(`📄 최종 피드백이 ${filePath} 에 저장되었습니다.`);
   }
 }
