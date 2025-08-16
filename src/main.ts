@@ -1,6 +1,5 @@
 import { Agentica } from "@agentica/core";
 import { OpenAI } from "openai";
-import { DateTool, WeatherTool } from "./tools";
 import { ExcelTool } from "./tools/ExcelTool";
 import typia from "typia";
 import readline from "readline";
@@ -44,9 +43,9 @@ async function main() {
 
       const answers = await agent.conversate(input);
 
-      answers.forEach((answer) => {
-        console.log(JSON.stringify(answer, null, 2));
-      });
+      // answers.forEach((answer) => {
+      //   console.log(JSON.stringify(answer, null, 2));
+      // });
 
       conversation();
     });
