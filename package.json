@@ -6,8 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start:dev": "NODE_OPTIONS=--no-deprecation ts-node src/main.ts",
-    "start:test": "NODE_OPTIONS=--no-deprecation ts-node src/testMain.ts",
-    "read-daily-test": "NODE_OPTIONS=--no-deprecation ts-node src/readDailyTest.ts",
+    "write:excel": "ts-node src/tools/excel.writeToExcel.ts",
     "start": "NODE_OPTIONS=--no-deprecation node dist/main.js",
     "prepare": "ts-patch install"
   },
@@ -28,9 +27,10 @@
     "@samchon/openapi": "^4.7.1",
     "body-parser": "^2.2.0",
     "dotenv": "^17.2.1",
+    "exceljs": "^4.4.0",
     "express": "^5.1.0",
     "openai": "^5.12.0",
-    "typia": "^9.7.0",
+    "typia": "^9.7.1",
     "xlsx": "^0.18.5"
   }
 }
