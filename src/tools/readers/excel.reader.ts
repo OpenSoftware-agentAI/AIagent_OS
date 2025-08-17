@@ -30,7 +30,7 @@ export const ExcelFileReader: ExcelReaders = {
     return sheetToJson("T3:Y9", 0);
   },
   readTestRanges(): string[] {
-    const raw = sheetToJson("G15:K19", 0);
+    const raw = sheetToJson("G15:J19", 0);
     const flat = raw
       .flat()
       .map((v) =>
