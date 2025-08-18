@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SmsTool = void 0;
-// src/tools/SmsTool.ts (SOLAPI 이미지 업로드 방식으로 수정된 전체 코드)
+// src/tools/SmsTool.ts (정리된 전체 코드)
 const messaging_service_1 = require("../features/messaging/messaging.service");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
@@ -115,7 +115,8 @@ class SmsTool {
     }
     /**
      * 이미지와 함께 메시지를 보냅니다 (MMS) - SOLAPI 업로드 방식 사용
-     */
+     * 이미지와 텍스트를 함께보내야 성공적으로 메세지가 전송됩니다.
+    */
     sendImageMessage(_a) {
         return __awaiter(this, arguments, void 0, function* ({ to, text, imageFilePath, subject = undefined, isAdvertisement = false, allowNightSend = false }) {
             try {
@@ -127,7 +128,7 @@ class SmsTool {
                 // SOLAPI SDK를 직접 사용하여 MMS 전송
                 const result = yield client_1.messageService.send({
                     to: to,
-                    from: process.env.SOLAPI_SENDER_PHONE || "029302266",
+                    from: process.env.SOLAPI_SENDER_PHONE || "01024969408", // 올바른 번호로 수정
                     text: text,
                     subject: validSubject,
                     imageId: imageId
@@ -193,7 +194,7 @@ class SmsTool {
                             // 이미지가 있는 경우 SOLAPI SDK 직접 사용
                             result = yield client_1.messageService.send({
                                 to,
-                                from: process.env.SOLAPI_SENDER_PHONE || "029302266",
+                                from: process.env.SOLAPI_SENDER_PHONE || "01024969408", // 올바른 번호로 수정
                                 text,
                                 subject: validSubject,
                                 imageId
@@ -311,7 +312,7 @@ class SmsTool {
                 // SOLAPI SDK로 직접 MMS 전송
                 const result = yield client_1.messageService.send({
                     to,
-                    from: process.env.SOLAPI_SENDER_PHONE || "029302266",
+                    from: process.env.SOLAPI_SENDER_PHONE || "01024969408", // 올바른 번호로 수정
                     text: `📅 ${text}`,
                     subject: title ? `📅 ${title}` : "학원 안내",
                     imageId

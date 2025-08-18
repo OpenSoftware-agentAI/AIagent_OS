@@ -1,4 +1,4 @@
-// src/tools/SmsTool.ts (SOLAPI 이미지 업로드 방식으로 수정된 전체 코드)
+// src/tools/SmsTool.ts (정리된 전체 코드)
 
 import { 
   sendMessage,
@@ -114,66 +114,67 @@ export class SmsTool {
 
   /**
    * 이미지와 함께 메시지를 보냅니다 (MMS) - SOLAPI 업로드 방식 사용
-   */
-async sendImageMessage({ to, text, imageFilePath, subject = undefined, isAdvertisement = false, allowNightSend = false }: { 
-  to: string; 
-  text: string; 
-  imageFilePath: string; 
-  subject?: string | undefined;
-  isAdvertisement?: boolean;
-  allowNightSend?: boolean;
-}) {
-  try {
-    // subject null 방지
-    const validSubject = subject === null ? undefined : subject;
-    
-    // 이미지를 SOLAPI 서버에 업로드하고 imageId 받기
-    const imageId = await this.uploadImageToSolapi(imageFilePath);
-    console.log('이미지 업로드 성공. imageId:', imageId);
-    
-    // SOLAPI SDK를 직접 사용하여 MMS 전송
-    const result = await messageService.send({
-      to: to,
-      from: process.env.SOLAPI_SENDER_PHONE || "029302266",
-      text: text,
-      subject: validSubject,
-      imageId: imageId
-    });
-
-    console.log('SOLAPI 전송 결과:', JSON.stringify(result, null, 2));
-
-    // failedMessageList 확인
-    if (result.failedMessageList && result.failedMessageList.length > 0) {
-      console.error('발송 실패 메시지 목록:', JSON.stringify(result.failedMessageList, null, 2));
+   * 이미지와 텍스트를 함께보내야 성공적으로 메세지가 전송됩니다.  
+  */
+  async sendImageMessage({ to, text, imageFilePath, subject = undefined, isAdvertisement = false, allowNightSend = false }: { 
+    to: string; 
+    text: string; 
+    imageFilePath: string; 
+    subject?: string | undefined;
+    isAdvertisement?: boolean;
+    allowNightSend?: boolean;
+  }) {
+    try {
+      // subject null 방지
+      const validSubject = subject === null ? undefined : subject;
       
-      // 실패 원인 분석
-      const failureReasons = result.failedMessageList.map(failed => ({
-        to: failed.to,
-        statusCode: failed.statusCode,
-        statusMessage: failed.statusMessage,
-        messageId: failed.messageId
-      }));
+      // 이미지를 SOLAPI 서버에 업로드하고 imageId 받기
+      const imageId = await this.uploadImageToSolapi(imageFilePath);
+      console.log('이미지 업로드 성공. imageId:', imageId);
+      
+      // SOLAPI SDK를 직접 사용하여 MMS 전송
+      const result = await messageService.send({
+        to: to,
+        from: process.env.SOLAPI_SENDER_PHONE || "01024969408", // 올바른 번호로 수정
+        text: text,
+        subject: validSubject,
+        imageId: imageId
+      });
+
+      console.log('SOLAPI 전송 결과:', JSON.stringify(result, null, 2));
+
+      // failedMessageList 확인
+      if (result.failedMessageList && result.failedMessageList.length > 0) {
+        console.error('발송 실패 메시지 목록:', JSON.stringify(result.failedMessageList, null, 2));
+        
+        // 실패 원인 분석
+        const failureReasons = result.failedMessageList.map(failed => ({
+          to: failed.to,
+          statusCode: failed.statusCode,
+          statusMessage: failed.statusMessage,
+          messageId: failed.messageId
+        }));
+
+        return { 
+          success: false, 
+          message: `이미지 메시지 발송 실패. 실패 원인: ${JSON.stringify(failureReasons)}`, 
+          data: { result, failureReasons }
+        };
+      }
 
       return { 
+        success: true, 
+        message: `이미지 메시지(MMS) 발송 성공 (${to})`, 
+        data: result 
+      };
+    } catch (error: any) {
+      console.error('sendImageMessage 에러:', error);
+      return { 
         success: false, 
-        message: `이미지 메시지 발송 실패. 실패 원인: ${JSON.stringify(failureReasons)}`, 
-        data: { result, failureReasons }
+        message: `이미지 메시지 발송 실패: ${error.message}` 
       };
     }
-
-    return { 
-      success: true, 
-      message: `이미지 메시지(MMS) 발송 성공 (${to})`, 
-      data: result 
-    };
-  } catch (error: any) {
-    console.error('sendImageMessage 에러:', error);
-    return { 
-      success: false, 
-      message: `이미지 메시지 발송 실패: ${error.message}` 
-    };
   }
-}
 
   /**
    * 여러 수신자에게 동일한 메시지를 보냅니다 (다중 발송, 1~2명 권장)
@@ -212,7 +213,7 @@ async sendImageMessage({ to, text, imageFilePath, subject = undefined, isAdverti
             // 이미지가 있는 경우 SOLAPI SDK 직접 사용
             result = await messageService.send({
               to,
-              from: process.env.SOLAPI_SENDER_PHONE || "029302266",
+              from: process.env.SOLAPI_SENDER_PHONE || "01024969408", // 올바른 번호로 수정
               text,
               subject: validSubject,
               imageId
@@ -341,7 +342,7 @@ async sendImageMessage({ to, text, imageFilePath, subject = undefined, isAdverti
       // SOLAPI SDK로 직접 MMS 전송
       const result = await messageService.send({
         to,
-        from: process.env.SOLAPI_SENDER_PHONE || "029302266",
+        from: process.env.SOLAPI_SENDER_PHONE || "01024969408", // 올바른 번호로 수정
         text: `📅 ${text}`,
         subject: title ? `📅 ${title}` : "학원 안내",
         imageId

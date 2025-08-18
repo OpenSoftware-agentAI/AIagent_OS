@@ -1887,7 +1887,7 @@ function main() {
                                         }
                                     ]
                                 },
-                                description: "\uC774\uBBF8\uC9C0\uC640 \uD568\uAED8 \uBA54\uC2DC\uC9C0\uB97C \uBCF4\uB0C5\uB2C8\uB2E4 (MMS) - SOLAPI \uC5C5\uB85C\uB4DC \uBC29\uC2DD \uC0AC\uC6A9",
+                                description: "\uC774\uBBF8\uC9C0\uC640 \uD568\uAED8 \uBA54\uC2DC\uC9C0\uB97C \uBCF4\uB0C5\uB2C8\uB2E4 (MMS) - SOLAPI \uC5C5\uB85C\uB4DC \uBC29\uC2DD \uC0AC\uC6A9\n\uC774\uBBF8\uC9C0\uC640 \uD14D\uC2A4\uD2B8\uB97C \uD568\uAED8\uBCF4\uB0B4\uC57C \uC131\uACF5\uC801\uC73C\uB85C \uBA54\uC138\uC9C0\uAC00 \uC804\uC1A1\uB429\uB2C8\uB2E4.",
                                 validate: (() => { const _io0 = input => "string" === typeof input.to && "string" === typeof input.text && "string" === typeof input.imageFilePath && (undefined === input.subject || "string" === typeof input.subject) && (undefined === input.isAdvertisement || "boolean" === typeof input.isAdvertisement) && (undefined === input.allowNightSend || "boolean" === typeof input.allowNightSend); const _vo0 = (input, _path, _exceptionable = true) => ["string" === typeof input.to || _report(_exceptionable, {
                                         path: _path + ".to",
                                         expected: "string",
