@@ -3,8 +3,6 @@ import { ExcelFileReader } from "./readers/excel.reader";
 import * as fs from "fs";
 import * as path from "path";
 import * as XLSX from "xlsx";
-
-// exceljs 설치가 필요합니다: npm install exceljs
 import * as Excel from "exceljs";
 
 export class ExcelTool {
@@ -113,7 +111,6 @@ export class ExcelTool {
       outputLines.push(output);
     }
 
-    // === 최종 결과 저장 ===
     const assetsDir = path.resolve(__dirname, "../assets");
     if (!fs.existsSync(assetsDir)) {
       fs.mkdirSync(assetsDir, { recursive: true });
@@ -125,9 +122,7 @@ export class ExcelTool {
     console.log(`📄 최종 피드백이 ${filePath} 에 저장되었습니다.`);
   }
 
-  /** feedback을 data.xlsx에 삽입 */
   async insertFeedback() {
-    // 1. finalComment.txt 읽기
     const filePath = path.resolve(__dirname, "../assets/finalComment.txt");
     const rawText = fs.readFileSync(filePath, "utf-8");
 
@@ -136,18 +131,15 @@ export class ExcelTool {
       .map((p) => p.trim())
       .filter(Boolean);
 
-    // 2. data.xlsx 읽기
     const excelPath = path.resolve(__dirname, "../assets/data.xlsx");
     const workbook = new Excel.Workbook();
     await workbook.xlsx.readFile(excelPath);
 
-    // 3. 시트 선택 ("데일리 작성")
     const worksheet = workbook.getWorksheet("데일리 작성");
     if (!worksheet) {
       throw new Error("❌ '데일리 작성' 시트를 찾을 수 없습니다.");
     }
 
-    // 4. 입력할 셀 범위
     const cellRefs = [
       "F21",
       "N21",
@@ -167,7 +159,6 @@ export class ExcelTool {
       "AD24",
     ];
 
-    // 5. 피드백 입력
     paragraphs.forEach((txt, idx) => {
       if (idx >= cellRefs.length) return;
       const cell = worksheet.getCell(cellRefs[idx]);
@@ -175,7 +166,6 @@ export class ExcelTool {
       cell.alignment = { wrapText: true, vertical: "top", horizontal: "left" };
     });
 
-    // 6. 저장
     await workbook.xlsx.writeFile(excelPath);
     console.log(
       "✅ ../assets/data.xlsx : '데일리 작성' 시트에 피드백 입력 완료 (양식 유지)"

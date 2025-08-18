@@ -6,7 +6,6 @@
   "scripts": {
     "build": "tsc",
     "start:dev": "NODE_OPTIONS=--no-deprecation ts-node src/main.ts",
-    "write:excel": "ts-node src/tools/excel.writeToExcel.ts",
     "start": "NODE_OPTIONS=--no-deprecation node dist/main.js",
     "prepare": "ts-patch install"
   },
