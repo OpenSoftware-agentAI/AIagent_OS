@@ -6,8 +6,7 @@ const { renderTemplate } = require("./render/htmlRenderer");
 const { htmlToPng } = require("./render/renderImage");
 
 (async () => {
-  const excelFile = path.resolve("src", "data", "students.xlsx");
-
+  const excelFile = path.resolve("src", "assets", "studentsInfo.xlsx");
   const templateFile = path.resolve("src", "templates", "student.html");
   const outDir = path.resolve("src", "assets", "students");
 

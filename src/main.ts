@@ -1,6 +1,7 @@
 import { Agentica } from "@agentica/core";
 import { OpenAI } from "openai";
 import { ExcelTool } from "./tools/ExcelTool";
+import { StudentExcelTool } from "./tools/StudentExcelTool";
 import typia from "typia";
 import readline from "readline";
 import dotenv from "dotenv";
@@ -25,6 +26,12 @@ async function main() {
         protocol: "class",
         application: typia.llm.application<ExcelTool, "chatgpt">(),
         execute: new ExcelTool(),
+      },
+      {
+        name: "Student Excel Tool", // 추가 컨트롤러
+        protocol: "class",
+        application: typia.llm.application<StudentExcelTool, "chatgpt">(),
+        execute: new StudentExcelTool(),
       },
     ],
   });
