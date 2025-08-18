@@ -1,7 +1,7 @@
 import { Agentica } from "@agentica/core";
 import { OpenAI } from "openai";
-import { DateTool, WeatherTool } from "./tools";
 import { ExcelTool } from "./tools/ExcelTool";
+import { StudentExcelTool } from "./tools/StudentExcelTool";
 import typia from "typia";
 import readline from "readline";
 import dotenv from "dotenv";
@@ -30,11 +30,19 @@ async function main() {
         application: typia.llm.application<ExcelTool, "chatgpt">(),
         execute: new ExcelTool(),
       },
-       {
-        name: "Sms Tool", // Agentica가 도구를 식별할 이름
-        protocol: "class",
-        application: typia.llm.application<SmsTool, "chatgpt">(),
-        execute: new SmsTool(),
+{
+  name: "Student Excel Tool", // 추가 컨트롤러
+  protocol: "class",
+  application: typia.llm.application<StudentExcelTool, "chatgpt">(),
+  execute: new StudentExcelTool(),
+},
+{
+  name: "Sms Tool", // Agentica가 도구를 식별할 이름
+  protocol: "class",
+  application: typia.llm.application<SmsTool, "chatgpt">(),
+  execute: new SmsTool(),
+},
+
       },
     ],
   });
@@ -53,9 +61,9 @@ async function main() {
 
       const answers = await agent.conversate(input);
 
-      answers.forEach((answer) => {
-        console.log(JSON.stringify(answer, null, 2));
-      });
+      // answers.forEach((answer) => {
+      //   console.log(JSON.stringify(answer, null, 2));
+      // });
 
       conversation();
     });

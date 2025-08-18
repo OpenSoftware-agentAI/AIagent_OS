@@ -1,130 +1,31 @@
-import * as xlsx from "xlsx";
-import * as path from "path";
+import { ExcelReaders } from "./readers/excel.types";
+import { ExcelFileReader } from "./readers/excel.reader";
 import * as fs from "fs";
+import * as path from "path";
+import * as XLSX from "xlsx";
+import * as Excel from "exceljs";
 
 export class ExcelTool {
-  private filePath: string;
-  private explanationPath: string;
-  private endingCommentPath: string;
-  private encouragementsPath: string;
+  constructor(private readers: ExcelReaders = ExcelFileReader) {}
 
-  constructor() {
-    this.filePath = path.join(__dirname, "../assets/data.xlsm");
-    this.explanationPath = path.join(__dirname, "../assets/explanation.txt");
-    this.endingCommentPath = path.join(
-      __dirname,
-      "../assets/endingComment.txt"
-    );
-    this.encouragementsPath = path.join(
-      __dirname,
-      "../assets/encouragementsComment.txt"
-    );
-  }
-
-  /**
-   * 엑셀 파일의 T3:Y9 범위(예시)를 읽어서 반환합니다.
-   */
-  readDailyTest(): string[][] {
-    const workbook = xlsx.readFile(this.filePath);
-    const sheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[sheetName];
-
-    const data = xlsx.utils.sheet_to_json(worksheet, {
-      range: "T3:Y9",
-      header: 1,
-    }) as string[][];
-
-    return data;
-  }
-
-  readTestRanges(): string[] {
-    const workbook = xlsx.readFile(this.filePath);
-    const sheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[sheetName];
-
-    const data = xlsx.utils.sheet_to_json(worksheet, {
-      range: "G15:K19",
-      header: 1,
-    }) as string[][];
-
-    const flat = data
-      .flat()
-      .map((v) =>
-        String(v)
-          .replace(/[\r\n]+/g, " ")
-          .trim()
-      )
-      .filter((v) => v.length > 0);
-
-    const uniqueRanges = Array.from(new Set(flat));
-
-    return uniqueRanges;
-  }
-
-  readExplanations(): string[] {
-    try {
-      const file = fs.readFileSync(this.explanationPath, "utf-8");
-      return file
-        .split("\n")
-        .map((line) => line.trim())
-        .filter((line) => line.length > 0);
-    } catch (error) {
-      console.warn("explanation.txt 파일을 읽는 도중 오류 발생:", error);
-      return [];
-    }
-  }
-
-  readEndingComments(): string[] {
-    try {
-      const file = fs.readFileSync(this.endingCommentPath, "utf-8");
-      return file
-        .split("\n")
-        .map((line) => line.trim())
-        .filter((line) => line.length > 0);
-    } catch (error) {
-      console.warn("endingComment.txt 파일을 읽는 중 오류 발생:", error);
-      return [];
-    }
-  }
-
-  private getRandomEndingComment(comments: string[]): string {
-    if (comments.length === 0) return "";
-    const randomIndex = Math.floor(Math.random() * comments.length);
-    return comments[randomIndex];
-  }
-
-  readEncouragementComments(): string[] {
-    try {
-      const file = fs.readFileSync(this.encouragementsPath, "utf-8");
-      return file
-        .split("\n")
-        .map((line) => line.trim())
-        .filter((line) => line.length > 0);
-    } catch (error) {
-      console.warn(
-        "encouragementsComment.txt 파일을 읽는 중 오류 발생:",
-        error
-      );
-      return [];
-    }
-  }
-
-  private getRandomEncouragementComment(comments: string[]): string {
-    if (comments.length === 0) return "";
-    const randomIndex = Math.floor(Math.random() * comments.length);
-    return comments[randomIndex];
+  private pickRandom(list: string[]) {
+    if (!list.length) return "";
+    return list[Math.floor(Math.random() * list.length)];
   }
 
   printFeedbacks(): void {
-    const data = this.readDailyTest();
-    const explanations = this.readExplanations();
-    const endingComments = this.readEndingComments();
-    const encouragementComments = this.readEncouragementComments();
-    const testRanges = this.readTestRanges();
+    const data = this.readers.readDailyTest();
+    const explanations = this.readers.readExplanations();
+    const endingComments = this.readers.readEndingComments();
+    const encouragementComments = this.readers.readEncouragementComments();
+    const testRanges = this.readers.readTestRanges();
+
+    const outputLines: string[] = [];
 
     if (data.length === 0) {
-      console.log("엑셀 데이터가 비어있습니다.");
-      return;
+      const msg = "엑셀 데이터가 비어있습니다.";
+      console.log(msg);
+      outputLines.push(msg);
     }
 
     const totalProblems = data[0].length - 1;
@@ -136,18 +37,20 @@ export class ExcelTool {
       const answers = row.slice(1);
 
       const noShowCount = answers.filter((a) => a === "미응시").length;
-      const randomEnding = this.getRandomEndingComment(endingComments);
-      const randomEncouragement = this.getRandomEncouragementComment(
-        encouragementComments
-      );
+      const randomEnding = this.pickRandom(endingComments);
+      const randomEncouragement = this.pickRandom(encouragementComments);
 
-      if (noShowCount > 0) {
-        console.log(`${shortName} 학생은 시험에 미응시하였습니다.`);
-        continue;
-      }
+      let output = "";
 
       const wrongProblems: { num: number; desc: string }[] = [];
       const correctProblems: { num: number; desc: string }[] = [];
+
+      if (noShowCount > 0) {
+        output += `${shortName} 학생은 시험에 미응시하였습니다.`;
+        console.log(output);
+        outputLines.push(output);
+        continue;
+      }
 
       answers.forEach((ans, idx) => {
         let desc = explanations[idx] || `${idx + 1}번 문제`;
@@ -160,14 +63,12 @@ export class ExcelTool {
         }
       });
 
-      let output = "";
       if (testRanges.length > 0) {
         output += `오늘 데일리테스트는 ${testRanges.join(
           ", "
         )} 범위 내에서 출제되었습니다. `;
       }
 
-      // 오답 없는 경우
       if (wrongProblems.length === 0) {
         const correctText = correctProblems
           .map((p) => `${p.desc}(${p.num}번)`)
@@ -178,10 +79,10 @@ export class ExcelTool {
         }
         output += ` ${randomEnding}`;
         console.log(output);
+        outputLines.push(output);
         continue;
       }
 
-      // 오답이 있는 경우
       const wrongText = wrongProblems
         .map((p) => `${p.desc}(${p.num}번)`)
         .join(", ");
@@ -189,7 +90,6 @@ export class ExcelTool {
         .map((p) => `${p.desc}(${p.num}번)`)
         .join(", ");
 
-      // 1, 2개 문제 틀린 경우
       if (wrongProblems.length <= 3) {
         output += `${shortName} 학생은 ${totalProblems}문제 중에서 ${wrongProblems.length}문제가 오답이었습니다. ${wrongText} 에서 실수가 있었습니다.`;
 
@@ -198,10 +98,7 @@ export class ExcelTool {
         }
 
         output += ` ${randomEnding}`;
-      }
-
-      // 3개 이상(과반수 이상) 틀린 경우
-      else {
+      } else {
         output += `${shortName} 학생은 오늘 데일리테스트를 어려워했습니다. ${wrongText} 에서 실수가 있었습니다.`;
         if (correctProblems.length > 0) {
           output += ` 그러나 ${correctText} 는 올바르게 풀었습니다.`;
@@ -211,17 +108,67 @@ export class ExcelTool {
       }
 
       console.log(output);
+      outputLines.push(output);
     }
+
+    const assetsDir = path.resolve(__dirname, "../assets");
+    if (!fs.existsSync(assetsDir)) {
+      fs.mkdirSync(assetsDir, { recursive: true });
+    }
+
+    const filePath = path.join(assetsDir, "finalComment.txt");
+    fs.writeFileSync(filePath, outputLines.join("\n\n"), "utf-8");
+
+    console.log(`📄 최종 피드백이 ${filePath} 에 저장되었습니다.`);
   }
 
-  /**
-   * 확인용: 문제 설명 리스트 출력
-   */
-  // testPrintExplanations(): void {
-  //   const explanations = this.readExplanations();
-  //   console.log("=== 문제 설명 리스트 ===");
-  //   explanations.forEach((desc, idx) => {
-  //     console.log(`${idx + 1}번 문제: ${desc}`);
-  //   });
-  // }
+  async insertFeedback() {
+    const filePath = path.resolve(__dirname, "../assets/finalComment.txt");
+    const rawText = fs.readFileSync(filePath, "utf-8");
+
+    const paragraphs = rawText
+      .split(/\n{2,}/)
+      .map((p) => p.trim())
+      .filter(Boolean);
+
+    const excelPath = path.resolve(__dirname, "../assets/data.xlsx");
+    const workbook = new Excel.Workbook();
+    await workbook.xlsx.readFile(excelPath);
+
+    const worksheet = workbook.getWorksheet("데일리 작성");
+    if (!worksheet) {
+      throw new Error("❌ '데일리 작성' 시트를 찾을 수 없습니다.");
+    }
+
+    const cellRefs = [
+      "F21",
+      "N21",
+      "V21",
+      "AD21",
+      "F22",
+      "N22",
+      "V22",
+      "AD22",
+      "F23",
+      "N23",
+      "V23",
+      "AD23",
+      "F24",
+      "N24",
+      "V24",
+      "AD24",
+    ];
+
+    paragraphs.forEach((txt, idx) => {
+      if (idx >= cellRefs.length) return;
+      const cell = worksheet.getCell(cellRefs[idx]);
+      cell.value = txt;
+      cell.alignment = { wrapText: true, vertical: "top", horizontal: "left" };
+    });
+
+    await workbook.xlsx.writeFile(excelPath);
+    console.log(
+      "✅ ../assets/data.xlsx : '데일리 작성' 시트에 피드백 입력 완료 (양식 유지)"
+    );
+  }
 }
