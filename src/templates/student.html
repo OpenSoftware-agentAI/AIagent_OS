@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title>데일리 학습알림</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        --w: 800px;
+        --border-strong: #2f4f4f;
+        --border-mid: #6aa3b3;
+        --grid: #95bfcc;
+        --bg: #f6fbfd;
+        --mint: #d5efc2;
+        --blue: #bfe7f5;
+        --head: #e6f6fc;
+        --ink: #1d2529;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        width: var(--w);
+        min-height: 1600px;
+        color: var(--ink);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕",
+          sans-serif;
+        background: #ffffff;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+      }
+      .page {
+        width: var(--w);
+        background: var(--bg);
+        border: 2px solid var(--border-strong);
+      }
+
+      /* 공통 */
+      .row {
+        display: flex;
+        width: 100%;
+      }
+      .cell {
+        border: 1px solid var(--grid);
+        background: #fff;
+        padding: 10px;
+      }
+      .head-cell {
+        background: var(--head);
+        font-weight: 700;
+        text-align: center;
+      }
+      .title-band {
+        background: var(--mint);
+        border-top: 2px solid var(--border-strong);
+        border-bottom: 1px solid var(--grid);
+        padding: 10px 12px;
+        font-weight: 800;
+      }
+      .left-label {
+        background: var(--blue);
+        font-weight: 700;
+        text-align: center;
+      }
+      .thin {
+        padding: 8px;
+      }
+
+      /* 헤더 */
+      .header {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        border-bottom: 2px solid var(--border-strong);
+      }
+      .brand {
+        border-right: 2px solid var(--border-strong);
+        background: #66c4e0;
+        color: #0d2a33;
+        padding: 10px 12px;
+      }
+      .logo {
+        display: inline-block;
+        background: #b8e8f4;
+        border: 2px solid #0c2430;
+        color: #0c2430;
+        font-weight: 800;
+        padding: 4px 8px;
+        border-radius: 4px;
+        margin-bottom: 8px;
+      }
+      .brand-title {
+        font-weight: 800;
+        font-size: 20px;
+        line-height: 1.3;
+      }
+      .meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        background: #e6f6fc;
+      }
+      .meta .cell {
+        border-left: 2px solid var(--border-strong);
+        border-bottom: 0;
+      }
+      .meta .label {
+        font-size: 13px;
+        color: #5a6b70;
+        margin-bottom: 6px;
+        text-align: center;
+      }
+      .meta .value {
+        height: 42px;
+        background: #fff;
+        border: 1px solid var(--grid);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 8px;
+        white-space: pre-line; /* 줄바꿈 표시 */
+      }
+
+      /* 테이블 유틸 */
+      .grid {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        background: #fff;
+      }
+      .grid th,
+      .grid td {
+        border: 1px solid var(--grid);
+        padding: 10px;
+        vertical-align: top;
+      }
+      .grid th {
+        background: var(--head);
+        font-weight: 700;
+        text-align: center;
+      }
+
+      /* 섹션 간격 */
+      .section {
+        border-bottom: 2px solid var(--border-strong);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <!-- 상단 헤더 -->
+      <div class="header">
+        <div class="brand">
+          <!-- <div class="logo">에듀메이트</div> -->
+          <div class="brand-title">데일리 학습알림<br />(중등 수학관)</div>
+        </div>
+        <div class="meta">
+          <div class="cell">
+            <div class="label">날짜</div>
+            <div class="value">{{date}}</div>
+          </div>
+          <div class="cell">
+            <div class="label">학년, 반</div>
+            <div class="value">{{grade}} {{class}}</div>
+          </div>
+          <div class="cell">
+            <div class="label">이름</div>
+            <div class="value">{{name}}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1. 출결 사항 -->
+      <div class="section">
+        <div class="title-band">1. 출결 사항</div>
+        <div class="row">
+          <div class="cell left-label" style="width: 20%">등원 사항</div>
+          <div class="cell" style="width: 30%">{{arrival_note}}</div>
+          <div class="cell left-label" style="width: 20%">특이사항</div>
+          <div class="cell" style="width: 30%">{{special_note}}</div>
+        </div>
+      </div>
+
+      <!-- 2. 수업 내용 -->
+      <div class="section">
+        <div class="title-band">2. 수업 내용</div>
+
+        <!-- 1교시 -->
+        <div class="row">
+          <div class="cell left-label" style="width: 12%">1교시</div>
+          <div class="cell" style="width: 88%; padding: 0">
+            <table class="grid">
+              <colgroup>
+                <col style="width: 14%" />
+                <col style="width: 86%" />
+              </colgroup>
+              <tbody>
+                <tr>
+                  <th>교재, 단원</th>
+                  <td>{{unit1_textbook}}</td>
+                </tr>
+                <tr>
+                  <th>내용</th>
+                  <td style="height: 160px; white-space: pre-line">
+                    {{unit1_content_1}}<br />
+                    {{unit1_content_2}}<br />
+                    {{unit1_content_3}}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 2교시 -->
+        <div class="row">
+          <div class="cell left-label" style="width: 12%">2교시</div>
+          <div class="cell" style="width: 88%; padding: 0">
+            <table class="grid">
+              <colgroup>
+                <col style="width: 14%" />
+                <col style="width: 86%" />
+              </colgroup>
+              <tbody>
+                <tr>
+                  <th>교재, 단원</th>
+                  <td>{{unit2_textbook}}</td>
+                </tr>
+                <tr>
+                  <th>내용</th>
+                  <td style="height: 160px; white-space: pre-line">
+                    {{unit2_content_1}}<br />
+                    {{unit2_content_2}}<br />
+                    {{unit2_content_3}}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. 수업 참여도 및 숙제 -->
+      <div class="section">
+        <div class="title-band">3. 수업 참여도 및 숙제</div>
+
+        <!-- 수업 참여도 -->
+        <table class="grid">
+          <thead>
+            <tr>
+              <th style="width: 18%">수업 참여도</th>
+              <th>최상</th>
+              <th>상</th>
+              <th>중</th>
+              <th>하</th>
+              <th>최하</th>
+              <th>미참여</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="height: 32px"></td>
+              <td>{{participation_1}}</td>
+              <td>{{participation_2}}</td>
+              <td>{{participation_3}}</td>
+              <td>{{participation_4}}</td>
+              <td>{{participation_5}}</td>
+              <td>{{participation_6}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 저번 숙제 완성도 -->
+        <table class="grid" style="margin-top: 6px">
+          <thead>
+            <tr>
+              <th style="width: 18%">저번 숙제 완성도</th>
+              <th>최상</th>
+              <th>상</th>
+              <th>중</th>
+              <th>하</th>
+              <th>최하</th>
+              <th>미제출</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="height: 32px"></td>
+              <td>{{prev_homework_completion_1}}</td>
+              <td>{{prev_homework_completion_2}}</td>
+              <td>{{prev_homework_completion_3}}</td>
+              <td>{{prev_homework_completion_4}}</td>
+              <td>{{prev_homework_completion_5}}</td>
+              <td>{{prev_homework_completion_6}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 이번 숙제 -->
+        <div class="row" style="margin-top: 6px">
+          <div class="cell left-label" style="width: 18%">이번 숙제</div>
+          <td>{{this_homework}}</td>
+        </div>
+      </div>
+
+      <!-- 4. 데일리테스트 결과 및 기타 내용 -->
+      <div class="section">
+        <div class="title-band">4. 데일리테스트 결과 및 기타 내용</div>
+
+        <!-- 데일리 테스트 결과 표 -->
+        <div class="row">
+          <div class="cell left-label" style="width: 18%">
+            데일리테스트 결과
+          </div>
+          <div class="cell" style="width: 82%; padding: 0">
+            <table class="grid">
+              <thead>
+                <tr>
+                  <th style="width: 14%">번호</th>
+                  <th>출제 범위</th>
+                  <th style="width: 16%">정오</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="text-align: center">1</td>
+                  <td>{{simple_range_1}} {{detailed_range_1}}</td>
+                  <!-- <td>{{answer_1}}</td> -->
+                </tr>
+                <tr>
+                  <td style="text-align: center">2</td>
+                  <td>{{simple_range_2}} {{detailed_range_2}}</td>
+                  <!-- <td>{{answer_2}}</td> -->
+                </tr>
+                <tr>
+                  <td style="text-align: center">3</td>
+                  <td>{{simple_range_3}} {{detailed_range_3}}</td>
+                  <!-- <td>{{answer_3}}</td> -->
+                </tr>
+                <tr>
+                  <td style="text-align: center">4</td>
+                  <td>{{simple_range_4}} {{detailed_range_4}}</td>
+                  <!-- <td>{{answer_4}}</td> -->
+                </tr>
+                <tr>
+                  <td style="text-align: center">5</td>
+                  <td>{{simple_range_5}} {{detailed_range_5}}</td>
+                  <!-- <td>{{answer_5}}</td> -->
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 기타 내용 -->
+        <div class="row" style="margin-top: 6px">
+          <div class="cell left-label" style="width: 18%">기타 내용</div>
+          <div
+            class="cell"
+            style="width: 82%; height: 220px; white-space: pre-line"
+          >
+            {{etc_line_1}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
