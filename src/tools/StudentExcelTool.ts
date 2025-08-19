@@ -4,7 +4,7 @@ import * as Excel from "exceljs";
 
 type StudentsInfoRowBase = {
   date: string;
-  gradeAndClass: string; // ✅ grade/class 대신 단일 변수로 관리
+  gradeAndClass: string;
   id: string;
   name: string;
   arrival_note: string;
@@ -54,7 +54,6 @@ type StudentsInfoRowExtra = {
   unit2_content_2: string;
   unit2_content_3: string;
 
-  // ✅ 수정 → 단일 etc 필드
   etc: string;
 };
 
@@ -67,7 +66,7 @@ export class StudentExcelTool {
       __dirname,
       "../assets/studentsInfo.xlsx"
     ),
-    private readonly inputSheetIndexOrName: number | string = 1 // 첫 시트
+    private readonly inputSheetIndexOrName: number | string = 1
   ) {}
 
   private cellText(sheet: Excel.Worksheet, addr: string): string {
@@ -135,7 +134,7 @@ export class StudentExcelTool {
       sheet = wb.addWorksheet("Students");
       sheet.columns = [
         { header: "date", key: "date", width: 14 },
-        { header: "gradeAndClass", key: "gradeAndClass", width: 16 }, // ✅ 단일 필드
+        { header: "gradeAndClass", key: "gradeAndClass", width: 16 },
         { header: "id", key: "id", width: 12 },
         { header: "name", key: "name", width: 14 },
         { header: "arrival_note", key: "arrival_note", width: 30 },
@@ -202,7 +201,6 @@ export class StudentExcelTool {
         { header: "unit2_content_1", key: "unit2_content_1", width: 40 },
         { header: "unit2_content_2", key: "unit2_content_2", width: 40 },
         { header: "unit2_content_3", key: "unit2_content_3", width: 40 },
-        // ✅ 수정된 부분 → 단일 etc 열
         { header: "etc", key: "etc", width: 40 },
       ];
     }
@@ -212,7 +210,6 @@ export class StudentExcelTool {
   async export(): Promise<void> {
     const sheet = await this.loadInputSheet();
 
-    // ✅ 수정된 입력 부분
     const date = this.cellText(sheet, "C1");
     const gradeAndClass = this.cellText(sheet, "H1");
     const this_homework = this.buildThisHomework(sheet);
@@ -255,7 +252,6 @@ export class StudentExcelTool {
     const detailed_range_4 = this.cellText(sheet, "G18");
     const detailed_range_5 = this.cellText(sheet, "G19");
 
-    // etc_line_1~16 미리 읽음
     const etcLineValues: string[] = [
       this.cellText(sheet, "F21"),
       this.cellText(sheet, "N21"),
@@ -313,7 +309,7 @@ export class StudentExcelTool {
       const prev_homework_completion_5 = this.cellText(sheet, `AL${rr}`);
       const prev_homework_completion_6 = this.cellText(sheet, `AM${rr}`);
 
-      const studentIndex = r - 3; // 1번 학생 = r=4
+      const studentIndex = r - 3;
       const etc = etcLineValues[studentIndex - 1] || "";
 
       const row: StudentsInfoRow = {
@@ -357,7 +353,7 @@ export class StudentExcelTool {
         unit2_content_1,
         unit2_content_2,
         unit2_content_3,
-        etc, // ✅ 핵심
+        etc,
       };
 
       outSheet.addRow(row);
