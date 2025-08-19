@@ -4,8 +4,7 @@ import * as Excel from "exceljs";
 
 type StudentsInfoRowBase = {
   date: string;
-  grade: string;
-  class: string;
+  gradeAndClass: string; // ✅ grade/class 대신 단일 변수로 관리
   id: string;
   name: string;
   arrival_note: string;
@@ -55,7 +54,7 @@ type StudentsInfoRowExtra = {
   unit2_content_2: string;
   unit2_content_3: string;
 
-  // 수정 → etc는 단일 필드
+  // ✅ 수정 → 단일 etc 필드
   etc: string;
 };
 
@@ -106,27 +105,6 @@ export class StudentExcelTool {
     return "";
   }
 
-  private splitGradeClass(gradeAndClass: string): {
-    grade: string;
-    class: string;
-  } {
-    const s = (gradeAndClass ?? "").trim();
-    if (!s) return { grade: "", class: "" };
-
-    const parts = s.split(/\s+/);
-    if (parts.length >= 2)
-      return { grade: parts[0], class: parts.slice(1).join(" ") };
-
-    const hy = s.split("-");
-    if (hy.length >= 2)
-      return { grade: hy[0].trim(), class: hy.slice(1).join("-").trim() };
-
-    const m = s.match(/^(.+?)\((.+)\)$/);
-    if (m) return { grade: m[0].trim(), class: m[0].trim() };
-
-    return { grade: s, class: "" };
-  }
-
   private buildThisHomework(sheet: Excel.Worksheet): string {
     const l1 = this.cellText(sheet, "E12");
     const l2 = this.cellText(sheet, "E13");
@@ -157,8 +135,7 @@ export class StudentExcelTool {
       sheet = wb.addWorksheet("Students");
       sheet.columns = [
         { header: "date", key: "date", width: 14 },
-        { header: "grade", key: "grade", width: 10 },
-        { header: "class", key: "class", width: 10 },
+        { header: "gradeAndClass", key: "gradeAndClass", width: 16 }, // ✅ 단일 필드
         { header: "id", key: "id", width: 12 },
         { header: "name", key: "name", width: 14 },
         { header: "arrival_note", key: "arrival_note", width: 30 },
@@ -225,7 +202,7 @@ export class StudentExcelTool {
         { header: "unit2_content_1", key: "unit2_content_1", width: 40 },
         { header: "unit2_content_2", key: "unit2_content_2", width: 40 },
         { header: "unit2_content_3", key: "unit2_content_3", width: 40 },
-        // 수정된 부분 → 단일 etc 열
+        // ✅ 수정된 부분 → 단일 etc 열
         { header: "etc", key: "etc", width: 40 },
       ];
     }
@@ -235,9 +212,9 @@ export class StudentExcelTool {
   async export(): Promise<void> {
     const sheet = await this.loadInputSheet();
 
-    const date = this.joinRangeInRow(sheet, 3, 7, 1);
-    const gradeClassRaw = this.joinRangeInRow(sheet, 8, 13, 1);
-    const { grade, class: klass } = this.splitGradeClass(gradeClassRaw);
+    // ✅ 수정된 입력 부분
+    const date = this.cellText(sheet, "C1");
+    const gradeAndClass = this.cellText(sheet, "H1");
     const this_homework = this.buildThisHomework(sheet);
 
     const participationHeaders = [
@@ -278,7 +255,7 @@ export class StudentExcelTool {
     const detailed_range_4 = this.cellText(sheet, "G18");
     const detailed_range_5 = this.cellText(sheet, "G19");
 
-    // etc_line_1~16 미리 읽음 (단일 시트에서 모두 가져오기)
+    // etc_line_1~16 미리 읽음
     const etcLineValues: string[] = [
       this.cellText(sheet, "F21"),
       this.cellText(sheet, "N21"),
@@ -341,8 +318,7 @@ export class StudentExcelTool {
 
       const row: StudentsInfoRow = {
         date,
-        grade,
-        class: klass,
+        gradeAndClass,
         id,
         name,
         arrival_note,
@@ -381,7 +357,7 @@ export class StudentExcelTool {
         unit2_content_1,
         unit2_content_2,
         unit2_content_3,
-        etc, // 핵심
+        etc, // ✅ 핵심
       };
 
       outSheet.addRow(row);
