@@ -4,6 +4,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as XLSX from "xlsx";
 import * as Excel from "exceljs";
+import { exec } from "child_process";
 
 export class ExcelTool {
   constructor(private readers: ExcelReaders = ExcelFileReader) {}
@@ -170,5 +171,18 @@ export class ExcelTool {
     console.log(
       "✅ ../assets/data.xlsx : '데일리 작성' 시트에 피드백 입력 완료 (양식 유지)"
     );
+  }
+
+  runNodeScript() {
+    const process = exec("node src/index.js", (error, stdout, stderr) => {
+      if (error) {
+        console.error(`❌ 실행 오류 발생: ${error.message}`);
+        return;
+      }
+      if (stderr) {
+        console.error(`⚠️ stderr: ${stderr}`);
+      }
+      console.log(`📢 실행 결과:\n${stdout}`);
+    });
   }
 }
