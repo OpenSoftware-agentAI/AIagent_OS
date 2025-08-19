@@ -55,6 +55,12 @@ type StudentsInfoRowExtra = {
   unit2_content_3: string;
 
   etc: string;
+
+  correct_wrong_1: string;
+  correct_wrong_2: string;
+  correct_wrong_3: string;
+  correct_wrong_4: string;
+  correct_wrong_5: string;
 };
 
 type StudentsInfoRow = StudentsInfoRowBase & StudentsInfoRowExtra;
@@ -202,6 +208,11 @@ export class StudentExcelTool {
         { header: "unit2_content_2", key: "unit2_content_2", width: 40 },
         { header: "unit2_content_3", key: "unit2_content_3", width: 40 },
         { header: "etc", key: "etc", width: 40 },
+        { header: "correct_wrong_1", key: "correct_wrong_1", width: 10 },
+        { header: "correct_wrong_2", key: "correct_wrong_2", width: 10 },
+        { header: "correct_wrong_3", key: "correct_wrong_3", width: 10 },
+        { header: "correct_wrong_4", key: "correct_wrong_4", width: 10 },
+        { header: "correct_wrong_5", key: "correct_wrong_5", width: 10 },
       ];
     }
     return { wb, sheet };
@@ -309,6 +320,13 @@ export class StudentExcelTool {
       const prev_homework_completion_5 = this.cellText(sheet, `AL${rr}`);
       const prev_homework_completion_6 = this.cellText(sheet, `AM${rr}`);
 
+      // ✅ 정오 기록 (U~Y 열)
+      const correct_wrong_1 = this.cellText(sheet, `U${r}`);
+      const correct_wrong_2 = this.cellText(sheet, `V${r}`);
+      const correct_wrong_3 = this.cellText(sheet, `W${r}`);
+      const correct_wrong_4 = this.cellText(sheet, `X${r}`);
+      const correct_wrong_5 = this.cellText(sheet, `Y${r}`);
+
       const studentIndex = r - 3;
       const etc = etcLineValues[studentIndex - 1] || "";
 
@@ -354,6 +372,11 @@ export class StudentExcelTool {
         unit2_content_2,
         unit2_content_3,
         etc,
+        correct_wrong_1,
+        correct_wrong_2,
+        correct_wrong_3,
+        correct_wrong_4,
+        correct_wrong_5,
       };
 
       outSheet.addRow(row);
