@@ -164,4 +164,6 @@ src/
 - [ ] 주소록 연계 및 그룹 발송 기능
 - [ ] 파일 업로드 전용 블록 UX 고도화
 
+## 📄 라이선스
+이 프로젝트는 MIT License 하에 배포됩니다.
 **Made with using Agentica AI**
