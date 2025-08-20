@@ -22,7 +22,7 @@
       body {
         margin: 0;
         width: var(--w);
-        min-height: 1600px;
+        min-height: 1400px;
         color: var(--ink);
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕",
@@ -162,7 +162,7 @@
           </div>
           <div class="cell">
             <div class="label">학년, 반</div>
-            <div class="value">{{grade}} {{class}}</div>
+            <div class="value">{{gradeAndClass}}</div>
           </div>
           <div class="cell">
             <div class="label">이름</div>
@@ -326,27 +326,27 @@
                 <tr>
                   <td style="text-align: center">1</td>
                   <td>{{simple_range_1}} {{detailed_range_1}}</td>
-                  <!-- <td>{{answer_1}}</td> -->
+                  <td style="text-align: center">{{correct_wrong_1}}</td>
                 </tr>
                 <tr>
                   <td style="text-align: center">2</td>
                   <td>{{simple_range_2}} {{detailed_range_2}}</td>
-                  <!-- <td>{{answer_2}}</td> -->
+                  <td style="text-align: center">{{correct_wrong_2}}</td>
                 </tr>
                 <tr>
                   <td style="text-align: center">3</td>
                   <td>{{simple_range_3}} {{detailed_range_3}}</td>
-                  <!-- <td>{{answer_3}}</td> -->
+                  <td style="text-align: center">{{correct_wrong_3}}</td>
                 </tr>
                 <tr>
                   <td style="text-align: center">4</td>
                   <td>{{simple_range_4}} {{detailed_range_4}}</td>
-                  <!-- <td>{{answer_4}}</td> -->
+                  <td style="text-align: center">{{correct_wrong_4}}</td>
                 </tr>
                 <tr>
                   <td style="text-align: center">5</td>
                   <td>{{simple_range_5}} {{detailed_range_5}}</td>
-                  <!-- <td>{{answer_5}}</td> -->
+                  <td style="text-align: center">{{correct_wrong_5}}</td>
                 </tr>
               </tbody>
             </table>
@@ -360,7 +360,7 @@
             class="cell"
             style="width: 82%; height: 220px; white-space: pre-line"
           >
-            {{etc_line_1}}
+            {{etc}}
           </div>
         </div>
       </div>

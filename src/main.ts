@@ -28,12 +28,14 @@ async function main() {
         execute: new ExcelTool(),
       },
       {
+    
         name: "Student Excel Tool",
         protocol: "class",
         application: typia.llm.application<StudentExcelTool, "chatgpt">(),
         execute: new StudentExcelTool(),
       },
       {
+
         name: "Sms Tool",
         protocol: "class",
         application: typia.llm.application<SmsTool, "chatgpt">(),
