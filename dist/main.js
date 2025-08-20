@@ -137,6 +137,36 @@ function main() {
                                         data: input
                                     };
                                 }; })()
+                            },
+                            {
+                                name: "runNodeScript",
+                                parameters: {
+                                    type: "object",
+                                    properties: {},
+                                    additionalProperties: false,
+                                    required: [],
+                                    $defs: {}
+                                },
+                                validate: (() => { const __is = input => true; let errors; let _report; return input => {
+                                    if (false === __is(input)) {
+                                        errors = [];
+                                        _report = __typia_transform__validateReport._validateReport(errors);
+                                        ((input, _path, _exceptionable = true) => true)(input, "$input", true);
+                                        const success = 0 === errors.length;
+                                        return success ? {
+                                            success,
+                                            data: input
+                                        } : {
+                                            success,
+                                            errors,
+                                            data: input
+                                        };
+                                    }
+                                    return {
+                                        success: true,
+                                        data: input
+                                    };
+                                }; })()
                             }
                         ]
                     },
