@@ -7,8 +7,6 @@ import readline from "readline";
 import dotenv from "dotenv";
 import { SmsTool } from "./tools/SmsTool"; // 새로 추가
 
-
-
 dotenv.config();
 
 async function main() {
@@ -22,7 +20,6 @@ async function main() {
       model: "gpt-4o-mini",
       api: openai,
     },
-
     controllers: [
       {
         name: "Excel Tool",
@@ -30,19 +27,17 @@ async function main() {
         application: typia.llm.application<ExcelTool, "chatgpt">(),
         execute: new ExcelTool(),
       },
-{
-  name: "Student Excel Tool", // 추가 컨트롤러
-  protocol: "class",
-  application: typia.llm.application<StudentExcelTool, "chatgpt">(),
-  execute: new StudentExcelTool(),
-},
-{
-  name: "Sms Tool", // Agentica가 도구를 식별할 이름
-  protocol: "class",
-  application: typia.llm.application<SmsTool, "chatgpt">(),
-  execute: new SmsTool(),
-},
-
+      {
+        name: "Student Excel Tool",
+        protocol: "class",
+        application: typia.llm.application<StudentExcelTool, "chatgpt">(),
+        execute: new StudentExcelTool(),
+      },
+      {
+        name: "Sms Tool",
+        protocol: "class",
+        application: typia.llm.application<SmsTool, "chatgpt">(),
+        execute: new SmsTool(),
       },
     ],
   });
@@ -53,22 +48,21 @@ async function main() {
   });
 
   const conversation = () => {
-    rl.question("User Input (exit: q) : ", async (input) => {
-      if (input === "q") {
+    rl.question('User Input (exit: q) : ', async (input) => {
+      if (input === 'q') {
         rl.close();
         return;
       }
-
-      const answers = await agent.conversate(input);
-
-      // answers.forEach((answer) => {
-      //   console.log(JSON.stringify(answer, null, 2));
-      // });
-
+      try {
+        const answers = await agent.conversate(input);
+        // 필요 시 디버깅:
+        // answers.forEach((a) => console.log(JSON.stringify(a, null, 2)));
+      } catch (e) {
+        console.error('Agent error:', e);
+      }
       conversation();
     });
   };
-
   conversation();
 }
 
