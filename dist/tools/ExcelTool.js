@@ -47,6 +47,7 @@ const excel_reader_1 = require("./readers/excel.reader");
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const Excel = __importStar(require("exceljs"));
+const child_process_1 = require("child_process");
 class ExcelTool {
     constructor(readers = excel_reader_1.ExcelFileReader) {
         this.readers = readers;
@@ -185,6 +186,18 @@ class ExcelTool {
             });
             yield workbook.xlsx.writeFile(excelPath);
             console.log("✅ ../assets/data.xlsx : '데일리 작성' 시트에 피드백 입력 완료 (양식 유지)");
+        });
+    }
+    runNodeScript() {
+        const process = (0, child_process_1.exec)("node src/index.js", (error, stdout, stderr) => {
+            if (error) {
+                console.error(`❌ 실행 오류 발생: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                console.error(`⚠️ stderr: ${stderr}`);
+            }
+            console.log(`📢 실행 결과:\n${stdout}`);
         });
     }
 }
