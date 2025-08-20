@@ -1,0 +1,41 @@
+{
+  "name": "aiagent_os",
+  "version": "1.0.0",
+  "description": "2025오픈소스 개발자대회 출품작",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node src/app/server.ts",
+    "build": "tsc",
+    "start:dev": "cross-env NODE_OPTIONS=--no-deprecation ts-node src/main.ts",
+    "read-daily-test": "cross-env NODE_OPTIONS=--no-deprecation ts-node src/readDailyTest.ts",
+    "start": "node dist/app/server.js",
+    "prepare": "ts-patch install",
+    "test": "echo \"테스트 추후 구현\" && exit 0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.2.1",
+    "@types/xlsx": "^0.0.36",
+    "cross-env": "^10.0.0",
+    "live-server": "^1.2.2",
+    "ts-node": "^10.9.2",
+    "ts-patch": "^3.3.0",
+    "typescript": "~5.9.2"
+  },
+  "dependencies": {
+    "@agentica/core": "^0.30.8",
+    "@samchon/openapi": "^4.7.1",
+    "body-parser": "^2.2.0",
+    "dotenv": "^17.2.1",
+    "exceljs": "^4.4.0",
+    "express": "^5.1.0",
+    "openai": "^5.12.0",
+    "puppeteer": "^24.16.2",
+    "solapi": "^5.5.1",
+    "typia": "^9.7.1",
+    "xlsx": "^0.18.5"
+  }
+}

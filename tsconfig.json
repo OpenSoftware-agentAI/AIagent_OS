@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    /* 기존 설정들 ... */
+
+    // "rootDir": "./", 대신 아래와 같이 수정
+    "rootDir": "./src", // TypeScript 소스 파일이 있는 루트 폴더는 'src' 입니다.
+
+    // "outDir": "./", 대신 아래와 같이 수정
+    "outDir": "./dist", // 컴파일된 JavaScript 파일이 생성될 폴더는 'dist' 입니다.
+
+    /* 기타 필요한 설정들 ... */
+    "target": "es2016", // Node.js 환경에서 사용하기에 적합합니다.
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "plugins": [
+      {
+        "transform": "typia/lib/transform"
+      }
+    ],
+    "strictNullChecks": true
+  },
+  // 컴파일 대상에 'src' 폴더 안의 모든 '.ts' 파일을 포함하도록 명시
+  "include": ["src/**/*.ts"],
+  // 빌드 시 'node_modules'와 새로 생성될 'dist' 폴더는 제외
+  "exclude": ["node_modules", "dist"]
+}
