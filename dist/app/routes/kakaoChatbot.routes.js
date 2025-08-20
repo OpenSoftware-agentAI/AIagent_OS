@@ -46,29 +46,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const __typia_transform__validateReport = __importStar(require("typia/lib/internal/_validateReport.js"));
-// src/app/routes/kakaoChatbot.routes.ts
 const express_1 = require("express");
-// AgenticaHistory와 함께, 필요한 구체적인 History 타입들을 임포트합니다.
-// AgenticaHistory.d.ts에 정의된 모든 타입을 가져와야 합니다.
 const core_1 = require("@agentica/core");
 const openai_1 = require("openai");
-const ExcelTool_1 = require("../../tools/ExcelTool"); // 경로 조정
-const SmsTool_1 = require("../../tools/SmsTool"); // 새로 추가한 도구
+const ExcelTool_1 = require("../../tools/ExcelTool");
+const SmsTool_1 = require("../../tools/SmsTool");
+const StudentExcelTool_1 = require("../../tools/StudentExcelTool");
 const typia_1 = __importDefault(require("typia"));
-// Agentica 인스턴스 (main.ts와 동일하게 설정)
+const nlp_1 = require("../../utils/nlp");
 const openai = new openai_1.OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 const agent = new core_1.Agentica({
-    model: "chatgpt",
+    model: 'chatgpt',
     vendor: {
-        model: "gpt-4o-mini", // main.ts와 동일한 모델
+        model: 'gpt-4o-mini',
         api: openai,
     },
     controllers: [
         {
-            name: "Excel Tool",
-            protocol: "class",
+            name: 'Excel Tool',
+            protocol: 'class',
             application: {
                 model: "chatgpt",
                 options: {
@@ -78,191 +76,37 @@ const agent = new core_1.Agentica({
                 },
                 functions: [
                     {
-                        name: "readDailyTest",
-                        parameters: {
-                            type: "object",
-                            properties: {},
-                            additionalProperties: false,
-                            required: [],
-                            $defs: {}
-                        },
-                        output: {
-                            type: "array",
-                            items: {
-                                type: "array",
-                                items: {
-                                    type: "string"
-                                }
-                            }
-                        },
-                        description: "\uC5D1\uC140 \uD30C\uC77C\uC758 T3:Y9 \uBC94\uC704(\uC608\uC2DC)\uB97C \uC77D\uC5B4\uC11C \uBC18\uD658\uD569\uB2C8\uB2E4.",
-                        validate: (() => { const __is = input => true; let errors; let _report; return input => {
-                            if (false === __is(input)) {
-                                errors = [];
-                                _report = __typia_transform__validateReport._validateReport(errors);
-                                ((input, _path, _exceptionable = true) => true)(input, "$input", true);
-                                const success = 0 === errors.length;
-                                return success ? {
-                                    success,
-                                    data: input
-                                } : {
-                                    success,
-                                    errors,
-                                    data: input
-                                };
-                            }
-                            return {
-                                success: true,
-                                data: input
-                            };
-                        }; })()
-                    },
-                    {
-                        name: "readTestRanges",
-                        parameters: {
-                            type: "object",
-                            properties: {},
-                            additionalProperties: false,
-                            required: [],
-                            $defs: {}
-                        },
-                        output: {
-                            type: "array",
-                            items: {
-                                type: "string"
-                            }
-                        },
-                        validate: (() => { const __is = input => true; let errors; let _report; return input => {
-                            if (false === __is(input)) {
-                                errors = [];
-                                _report = __typia_transform__validateReport._validateReport(errors);
-                                ((input, _path, _exceptionable = true) => true)(input, "$input", true);
-                                const success = 0 === errors.length;
-                                return success ? {
-                                    success,
-                                    data: input
-                                } : {
-                                    success,
-                                    errors,
-                                    data: input
-                                };
-                            }
-                            return {
-                                success: true,
-                                data: input
-                            };
-                        }; })()
-                    },
-                    {
-                        name: "readExplanations",
-                        parameters: {
-                            type: "object",
-                            properties: {},
-                            additionalProperties: false,
-                            required: [],
-                            $defs: {}
-                        },
-                        output: {
-                            type: "array",
-                            items: {
-                                type: "string"
-                            }
-                        },
-                        validate: (() => { const __is = input => true; let errors; let _report; return input => {
-                            if (false === __is(input)) {
-                                errors = [];
-                                _report = __typia_transform__validateReport._validateReport(errors);
-                                ((input, _path, _exceptionable = true) => true)(input, "$input", true);
-                                const success = 0 === errors.length;
-                                return success ? {
-                                    success,
-                                    data: input
-                                } : {
-                                    success,
-                                    errors,
-                                    data: input
-                                };
-                            }
-                            return {
-                                success: true,
-                                data: input
-                            };
-                        }; })()
-                    },
-                    {
-                        name: "readEndingComments",
-                        parameters: {
-                            type: "object",
-                            properties: {},
-                            additionalProperties: false,
-                            required: [],
-                            $defs: {}
-                        },
-                        output: {
-                            type: "array",
-                            items: {
-                                type: "string"
-                            }
-                        },
-                        validate: (() => { const __is = input => true; let errors; let _report; return input => {
-                            if (false === __is(input)) {
-                                errors = [];
-                                _report = __typia_transform__validateReport._validateReport(errors);
-                                ((input, _path, _exceptionable = true) => true)(input, "$input", true);
-                                const success = 0 === errors.length;
-                                return success ? {
-                                    success,
-                                    data: input
-                                } : {
-                                    success,
-                                    errors,
-                                    data: input
-                                };
-                            }
-                            return {
-                                success: true,
-                                data: input
-                            };
-                        }; })()
-                    },
-                    {
-                        name: "readEncouragementComments",
-                        parameters: {
-                            type: "object",
-                            properties: {},
-                            additionalProperties: false,
-                            required: [],
-                            $defs: {}
-                        },
-                        output: {
-                            type: "array",
-                            items: {
-                                type: "string"
-                            }
-                        },
-                        validate: (() => { const __is = input => true; let errors; let _report; return input => {
-                            if (false === __is(input)) {
-                                errors = [];
-                                _report = __typia_transform__validateReport._validateReport(errors);
-                                ((input, _path, _exceptionable = true) => true)(input, "$input", true);
-                                const success = 0 === errors.length;
-                                return success ? {
-                                    success,
-                                    data: input
-                                } : {
-                                    success,
-                                    errors,
-                                    data: input
-                                };
-                            }
-                            return {
-                                success: true,
-                                data: input
-                            };
-                        }; })()
-                    },
-                    {
                         name: "printFeedbacks",
+                        parameters: {
+                            type: "object",
+                            properties: {},
+                            additionalProperties: false,
+                            required: [],
+                            $defs: {}
+                        },
+                        validate: (() => { const __is = input => true; let errors; let _report; return input => {
+                            if (false === __is(input)) {
+                                errors = [];
+                                _report = __typia_transform__validateReport._validateReport(errors);
+                                ((input, _path, _exceptionable = true) => true)(input, "$input", true);
+                                const success = 0 === errors.length;
+                                return success ? {
+                                    success,
+                                    data: input
+                                } : {
+                                    success,
+                                    errors,
+                                    data: input
+                                };
+                            }
+                            return {
+                                success: true,
+                                data: input
+                            };
+                        }; })()
+                    },
+                    {
+                        name: "insertFeedback",
                         parameters: {
                             type: "object",
                             properties: {},
@@ -296,8 +140,53 @@ const agent = new core_1.Agentica({
             execute: new ExcelTool_1.ExcelTool(),
         },
         {
-            name: "Sms Tool",
-            protocol: "class",
+            name: 'Student Excel Tool',
+            protocol: 'class',
+            application: {
+                model: "chatgpt",
+                options: {
+                    reference: true,
+                    strict: false,
+                    separate: null
+                },
+                functions: [
+                    {
+                        name: "export",
+                        parameters: {
+                            type: "object",
+                            properties: {},
+                            additionalProperties: false,
+                            required: [],
+                            $defs: {}
+                        },
+                        validate: (() => { const __is = input => true; let errors; let _report; return input => {
+                            if (false === __is(input)) {
+                                errors = [];
+                                _report = __typia_transform__validateReport._validateReport(errors);
+                                ((input, _path, _exceptionable = true) => true)(input, "$input", true);
+                                const success = 0 === errors.length;
+                                return success ? {
+                                    success,
+                                    data: input
+                                } : {
+                                    success,
+                                    errors,
+                                    data: input
+                                };
+                            }
+                            return {
+                                success: true,
+                                data: input
+                            };
+                        }; })()
+                    }
+                ]
+            },
+            execute: new StudentExcelTool_1.StudentExcelTool(),
+        },
+        {
+            name: 'Sms Tool',
+            protocol: 'class',
             application: {
                 model: "chatgpt",
                 options: {
@@ -4118,96 +4007,121 @@ const agent = new core_1.Agentica({
             },
             execute: new SmsTool_1.SmsTool(),
         },
-        // 다른 도구들도 여기에 등록 (예: PdfParserTool)
     ],
 });
 const router = (0, express_1.Router)();
-// AgenticaHistory의 실제 타입을 바탕으로 사용자 정의 타입 가드 정의
-// AgenticaExecuteHistory의 'type'은 "execute" 입니다.
-// 이 타입 가드들은 answer가 특정 History 타입의 인스턴스임을 TypeScript에 알려줍니다.
-// AgenticaExecuteHistory 타입 가드 (도구 호출 및 결과 포함)
+// 타입 가드
 function isAgenticaExecute(answer) {
     return answer.type === 'execute';
 }
-// AgenticaAssistantMessageHistory 타입 가드
 function isAgenticaAssistantMessage(answer) {
     return answer.type === 'assistantMessage';
 }
+// 타임아웃 래퍼
+function withTimeout(promise, ms) {
+    return Promise.race([
+        promise,
+        new Promise((_, reject) => setTimeout(() => reject(new Error(`timeout(${ms}ms)`)), ms)),
+    ]);
+}
+// 카카오 간단 텍스트 응답
+function kakaoText(text) {
+    return {
+        version: '2.0',
+        template: {
+            outputs: [{ simpleText: { text } }],
+        },
+    };
+}
+// 간단 의도(도움말/헬스) 즉시 응답
+function quickIntentReplyOrNull(utterance) {
+    if (!utterance)
+        return kakaoText('메시지 내용을 찾을 수 없습니다.');
+    const msg = utterance.trim();
+    if (/^(도움말|help|사용법)$/i.test(msg)) {
+        return kakaoText([
+            '📋 사용 가이드',
+            '',
+            '• SMS: 010-0000-0000로 "내용" 문자 보내줘',
+            '• LMS/MMS도 동일, 이미지 파일은 업로드 후 지시',
+            '• 엑셀: 엑셀 데이터 정리/분석/요약 요청',
+        ].join('\n'));
+    }
+    if (/^(헬스체크|상태|health)$/i.test(msg)) {
+        return kakaoText('서버는 정상 동작 중입니다.');
+    }
+    return null;
+}
 router.post('/webhook', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c;
-    console.log('--- 카카오톡 웹훅 수신 ---');
-    console.log(JSON.stringify(req.body, null, 2));
+    var _a, _b, _c, _d, _e;
+    const utterance = ((_b = (_a = req.body) === null || _a === void 0 ? void 0 : _a.userRequest) === null || _b === void 0 ? void 0 : _b.utterance) || '';
+    const userId = (_e = (_d = (_c = req.body) === null || _c === void 0 ? void 0 : _c.userRequest) === null || _d === void 0 ? void 0 : _d.user) === null || _e === void 0 ? void 0 : _e.id;
+    console.log('--- 카카오 웹훅 ---', { userId, utterance });
     try {
-        const userMessage = (_b = (_a = req.body) === null || _a === void 0 ? void 0 : _a.userRequest) === null || _b === void 0 ? void 0 : _b.utterance; // 사용자의 발화 내용
-        if (!userMessage) {
-            console.log('사용자 메시지가 없습니다.');
-            return res.json({
-                version: "2.0",
-                template: { outputs: [{ simpleText: { text: "메시지 내용을 찾을 수 없습니다." } }] }
-            });
-        }
-        // Agentica에게 사용자 메시지 전달 및 응답 받기
-        // conversate는 여러 개의 History 객체를 반환할 수 있습니다.
-        // 마지막 히스토리를 주로 사용하거나, 모든 히스토리를 조합하여 응답을 만듭니다.
-        const agentAnswers = yield agent.conversate(userMessage);
-        let replyText = "명령을 이해하지 못했습니다. 다시 시도해 주세요.";
-        if (agentAnswers && agentAnswers.length > 0) {
-            // 가장 최신 또는 가장 관련성 높은 답변을 찾기 위해 배열을 역순으로 탐색하거나,
-            // 특정 타입의 답변이 나올 때까지 기다릴 수 있습니다.
-            // 여기서는 배열의 마지막 답변을 기준으로 처리합니다.
-            const lastAnswer = agentAnswers[agentAnswers.length - 1];
-            if (isAgenticaExecute(lastAnswer)) {
-                // AgenticaExecuteHistory는 도구 호출 정보 (operation)와 반환값 (value)을 모두 포함합니다.
-                // LLM이 함수 호출을 지시했을 때 이 타입이 반환됩니다.
-                console.log(`Agentica가 도구를 호출했습니다 (execute): ${lastAnswer.operation.name}`);
-                // `value` 속성에 실제 도구 실행 결과가 담겨 있습니다.
-                // `value`는 `unknown` 타입이므로 사용 전에 타입 확인 또는 캐스팅이 필요합니다.
-                const toolResult = lastAnswer.value; // toolResult는 IHttpResponse 또는 클래스 함수의 반환값
-                // 여기서 toolResult가 SMS Tool의 반환값인 { success: boolean, message: string, data?: any } 형태라고 가정합니다.
-                if (toolResult && typeof toolResult === 'object' && 'success' in toolResult) {
-                    if (toolResult.success) {
-                        replyText = `${toolResult.message || '요청이 성공적으로 처리되었습니다.'} GroupID: ${((_c = toolResult.data) === null || _c === void 0 ? void 0 : _c.groupId) || 'N/A'}`;
+        // 1) 간단 의도라면 즉시 응답
+        const quick = quickIntentReplyOrNull(utterance);
+        if (quick)
+            return res.json(quick);
+        // 2) 먼저 즉시 응답 (5초 제한 회피)
+        res.json(kakaoText('요청을 접수했습니다. 잠시만 기다려 주세요.'));
+        // 3) 백그라운드에서 자유 대화 + 업무 처리
+        setImmediate(() => __awaiter(void 0, void 0, void 0, function* () {
+            var _a, _b;
+            try {
+                // 우선 LLM에게 자유 대화 전달
+                const answers = yield withTimeout(agent.conversate(utterance), 4000);
+                // SMS 의도 감지(간단 키워드)
+                const maybeSms = /(문자|sms|메시지|메세지|보내줘|전송|발송)/i.test(utterance);
+                if (maybeSms) {
+                    const { phone, message, isAdvertisement, allowNightSend } = (0, nlp_1.extractSmsParamsFromUtterance)(utterance);
+                    if (!phone || !message) {
+                        console.log('SMS 파라미터 부족:', { phone, message });
+                        return;
                     }
-                    else {
-                        replyText = `요청 처리 중 오류가 발생했습니다: ${toolResult.message || '알 수 없는 오류'}`;
-                    }
-                }
-                else {
-                    // toolResult가 예상했던 형태가 아닐 때
-                    replyText = `요청 처리 완료. 결과: ${JSON.stringify(toolResult)}`;
-                }
-            }
-            else if (isAgenticaAssistantMessage(lastAnswer)) {
-                // Agentica가 직접 생성한 일반 텍스트 응답
-                replyText = lastAnswer.text;
-            }
-            // 다른 History 타입들 (예: UserMessage, SystemMessage 등)은 여기에서 추가 처리할 수 있습니다.
-            // else if (isAgenticaUserMessage(lastAnswer)) { /* ... */ }
-            // else if (isAgenticaSystemMessage(lastAnswer)) { /* ... */ }
-        }
-        else {
-            replyText = "Agentica가 응답을 생성하지 못했습니다.";
-        }
-        // 카카오톡 챗봇 응답 형식에 맞춰 JSON 반환
-        res.json({
-            version: "2.0",
-            template: {
-                outputs: [
-                    {
-                        simpleText: {
-                            text: replyText
+                    // 도구 호출 지시 프롬프트(Agentica가 SmsTool을 선택하도록 유도)
+                    const toolPrompt = `사용자 요청에 따라 SMS를 전송해.
+to=${phone}, text="${message}", isAdvertisement=${isAdvertisement}, allowNightSend=${allowNightSend}`;
+                    try {
+                        const toolAnswers = yield withTimeout(agent.conversate(toolPrompt), 4000);
+                        const last = toolAnswers[toolAnswers.length - 1];
+                        if (isAgenticaExecute(last)) {
+                            console.log('SMS Tool 실행:', (_a = last.operation) === null || _a === void 0 ? void 0 : _a.name);
+                            console.log('결과:', JSON.stringify((_b = last.value) !== null && _b !== void 0 ? _b : {}, null, 2));
+                        }
+                        else if (isAgenticaAssistantMessage(last)) {
+                            console.log('LLM 응답:', last.text);
+                        }
+                        else {
+                            console.log('SMS 처리 응답(기타):', JSON.stringify(last !== null && last !== void 0 ? last : {}));
                         }
                     }
-                ]
+                    catch (e) {
+                        console.error('SMS 처리 오류:', e);
+                    }
+                    return;
+                }
+                // 엑셀 의도(간단 예)
+                if (/(엑셀|excel|시트|sheet)/i.test(utterance)) {
+                    console.log('엑셀 관련 요청 감지');
+                    // 필요 시 추가 지시 프롬프트 구성
+                }
+                // 자유 대화 응답 로그
+                const last = answers[answers.length - 1];
+                if (isAgenticaAssistantMessage(last)) {
+                    console.log('AI 응답:', last.text);
+                }
+                else {
+                    console.log('AI 응답(요약):', JSON.stringify(last !== null && last !== void 0 ? last : {}));
+                }
             }
-        });
+            catch (err) {
+                console.error('백그라운드 처리 오류:', err);
+            }
+        }));
     }
     catch (error) {
-        console.error('카카오톡 웹훅 처리 중 오류 발생:', error);
-        res.status(500).json({
-            version: "2.0",
-            template: { outputs: [{ simpleText: { text: `오류가 발생했습니다: ${error.message}` } }] }
-        });
+        console.error('웹훅 처리 오류:', (error === null || error === void 0 ? void 0 : error.message) || error);
+        return res.json(kakaoText('처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.'));
     }
 }));
 exports.default = router;

@@ -49,6 +49,7 @@ const __typia_transform__validateReport = __importStar(require("typia/lib/intern
 const core_1 = require("@agentica/core");
 const openai_1 = require("openai");
 const ExcelTool_1 = require("./tools/ExcelTool");
+const StudentExcelTool_1 = require("./tools/StudentExcelTool");
 const typia_1 = __importDefault(require("typia"));
 const readline_1 = __importDefault(require("readline"));
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -78,191 +79,37 @@ function main() {
                         },
                         functions: [
                             {
-                                name: "readDailyTest",
-                                parameters: {
-                                    type: "object",
-                                    properties: {},
-                                    additionalProperties: false,
-                                    required: [],
-                                    $defs: {}
-                                },
-                                output: {
-                                    type: "array",
-                                    items: {
-                                        type: "array",
-                                        items: {
-                                            type: "string"
-                                        }
-                                    }
-                                },
-                                description: "\uC5D1\uC140 \uD30C\uC77C\uC758 T3:Y9 \uBC94\uC704(\uC608\uC2DC)\uB97C \uC77D\uC5B4\uC11C \uBC18\uD658\uD569\uB2C8\uB2E4.",
-                                validate: (() => { const __is = input => true; let errors; let _report; return input => {
-                                    if (false === __is(input)) {
-                                        errors = [];
-                                        _report = __typia_transform__validateReport._validateReport(errors);
-                                        ((input, _path, _exceptionable = true) => true)(input, "$input", true);
-                                        const success = 0 === errors.length;
-                                        return success ? {
-                                            success,
-                                            data: input
-                                        } : {
-                                            success,
-                                            errors,
-                                            data: input
-                                        };
-                                    }
-                                    return {
-                                        success: true,
-                                        data: input
-                                    };
-                                }; })()
-                            },
-                            {
-                                name: "readTestRanges",
-                                parameters: {
-                                    type: "object",
-                                    properties: {},
-                                    additionalProperties: false,
-                                    required: [],
-                                    $defs: {}
-                                },
-                                output: {
-                                    type: "array",
-                                    items: {
-                                        type: "string"
-                                    }
-                                },
-                                validate: (() => { const __is = input => true; let errors; let _report; return input => {
-                                    if (false === __is(input)) {
-                                        errors = [];
-                                        _report = __typia_transform__validateReport._validateReport(errors);
-                                        ((input, _path, _exceptionable = true) => true)(input, "$input", true);
-                                        const success = 0 === errors.length;
-                                        return success ? {
-                                            success,
-                                            data: input
-                                        } : {
-                                            success,
-                                            errors,
-                                            data: input
-                                        };
-                                    }
-                                    return {
-                                        success: true,
-                                        data: input
-                                    };
-                                }; })()
-                            },
-                            {
-                                name: "readExplanations",
-                                parameters: {
-                                    type: "object",
-                                    properties: {},
-                                    additionalProperties: false,
-                                    required: [],
-                                    $defs: {}
-                                },
-                                output: {
-                                    type: "array",
-                                    items: {
-                                        type: "string"
-                                    }
-                                },
-                                validate: (() => { const __is = input => true; let errors; let _report; return input => {
-                                    if (false === __is(input)) {
-                                        errors = [];
-                                        _report = __typia_transform__validateReport._validateReport(errors);
-                                        ((input, _path, _exceptionable = true) => true)(input, "$input", true);
-                                        const success = 0 === errors.length;
-                                        return success ? {
-                                            success,
-                                            data: input
-                                        } : {
-                                            success,
-                                            errors,
-                                            data: input
-                                        };
-                                    }
-                                    return {
-                                        success: true,
-                                        data: input
-                                    };
-                                }; })()
-                            },
-                            {
-                                name: "readEndingComments",
-                                parameters: {
-                                    type: "object",
-                                    properties: {},
-                                    additionalProperties: false,
-                                    required: [],
-                                    $defs: {}
-                                },
-                                output: {
-                                    type: "array",
-                                    items: {
-                                        type: "string"
-                                    }
-                                },
-                                validate: (() => { const __is = input => true; let errors; let _report; return input => {
-                                    if (false === __is(input)) {
-                                        errors = [];
-                                        _report = __typia_transform__validateReport._validateReport(errors);
-                                        ((input, _path, _exceptionable = true) => true)(input, "$input", true);
-                                        const success = 0 === errors.length;
-                                        return success ? {
-                                            success,
-                                            data: input
-                                        } : {
-                                            success,
-                                            errors,
-                                            data: input
-                                        };
-                                    }
-                                    return {
-                                        success: true,
-                                        data: input
-                                    };
-                                }; })()
-                            },
-                            {
-                                name: "readEncouragementComments",
-                                parameters: {
-                                    type: "object",
-                                    properties: {},
-                                    additionalProperties: false,
-                                    required: [],
-                                    $defs: {}
-                                },
-                                output: {
-                                    type: "array",
-                                    items: {
-                                        type: "string"
-                                    }
-                                },
-                                validate: (() => { const __is = input => true; let errors; let _report; return input => {
-                                    if (false === __is(input)) {
-                                        errors = [];
-                                        _report = __typia_transform__validateReport._validateReport(errors);
-                                        ((input, _path, _exceptionable = true) => true)(input, "$input", true);
-                                        const success = 0 === errors.length;
-                                        return success ? {
-                                            success,
-                                            data: input
-                                        } : {
-                                            success,
-                                            errors,
-                                            data: input
-                                        };
-                                    }
-                                    return {
-                                        success: true,
-                                        data: input
-                                    };
-                                }; })()
-                            },
-                            {
                                 name: "printFeedbacks",
+                                parameters: {
+                                    type: "object",
+                                    properties: {},
+                                    additionalProperties: false,
+                                    required: [],
+                                    $defs: {}
+                                },
+                                validate: (() => { const __is = input => true; let errors; let _report; return input => {
+                                    if (false === __is(input)) {
+                                        errors = [];
+                                        _report = __typia_transform__validateReport._validateReport(errors);
+                                        ((input, _path, _exceptionable = true) => true)(input, "$input", true);
+                                        const success = 0 === errors.length;
+                                        return success ? {
+                                            success,
+                                            data: input
+                                        } : {
+                                            success,
+                                            errors,
+                                            data: input
+                                        };
+                                    }
+                                    return {
+                                        success: true,
+                                        data: input
+                                    };
+                                }; })()
+                            },
+                            {
+                                name: "insertFeedback",
                                 parameters: {
                                     type: "object",
                                     properties: {},
@@ -296,7 +143,52 @@ function main() {
                     execute: new ExcelTool_1.ExcelTool(),
                 },
                 {
-                    name: "Sms Tool", // Agentica가 도구를 식별할 이름
+                    name: "Student Excel Tool",
+                    protocol: "class",
+                    application: {
+                        model: "chatgpt",
+                        options: {
+                            reference: true,
+                            strict: false,
+                            separate: null
+                        },
+                        functions: [
+                            {
+                                name: "export",
+                                parameters: {
+                                    type: "object",
+                                    properties: {},
+                                    additionalProperties: false,
+                                    required: [],
+                                    $defs: {}
+                                },
+                                validate: (() => { const __is = input => true; let errors; let _report; return input => {
+                                    if (false === __is(input)) {
+                                        errors = [];
+                                        _report = __typia_transform__validateReport._validateReport(errors);
+                                        ((input, _path, _exceptionable = true) => true)(input, "$input", true);
+                                        const success = 0 === errors.length;
+                                        return success ? {
+                                            success,
+                                            data: input
+                                        } : {
+                                            success,
+                                            errors,
+                                            data: input
+                                        };
+                                    }
+                                    return {
+                                        success: true,
+                                        data: input
+                                    };
+                                }; })()
+                            }
+                        ]
+                    },
+                    execute: new StudentExcelTool_1.StudentExcelTool(),
+                },
+                {
+                    name: "Sms Tool",
                     protocol: "class",
                     application: {
                         model: "chatgpt",
@@ -4125,15 +4017,19 @@ function main() {
             output: process.stdout,
         });
         const conversation = () => {
-            rl.question("User Input (exit: q) : ", (input) => __awaiter(this, void 0, void 0, function* () {
-                if (input === "q") {
+            rl.question('User Input (exit: q) : ', (input) => __awaiter(this, void 0, void 0, function* () {
+                if (input === 'q') {
                     rl.close();
                     return;
                 }
-                const answers = yield agent.conversate(input);
-                answers.forEach((answer) => {
-                    console.log(JSON.stringify(answer, null, 2));
-                });
+                try {
+                    const answers = yield agent.conversate(input);
+                    // 필요 시 디버깅:
+                    // answers.forEach((a) => console.log(JSON.stringify(a, null, 2)));
+                }
+                catch (e) {
+                    console.error('Agent error:', e);
+                }
                 conversation();
             }));
         };

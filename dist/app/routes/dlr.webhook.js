@@ -18,11 +18,6 @@ exports.dlrRouter = (0, express_1.Router)();
 exports.dlrRouter.post('/callbacks/dlr', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log('DLR 수신:', JSON.stringify(req.body, null, 2));
-        // TODO: 데이터베이스에 배달 결과 저장
-        // const reports = Array.isArray(req.body) ? req.body : [req.body];
-        // for (const report of reports) {
-        //   await saveDlrResult(report);
-        // }
         res.status(200).json({ success: true });
     }
     catch (error) {
