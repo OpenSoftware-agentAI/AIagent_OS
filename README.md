@@ -114,24 +114,6 @@ MESSAGING_SECRET=your_messaging_secret
 SENDER_PHONE=01012345678
 PORT=3000
 ```
-## 📁 프로젝트 구조
-```
-src/
-├── app/
-│   ├── routes/
-│   │   ├── kakaoChatbot.routes.ts    # 메인 웹훅 라우터
-│   │   ├── messaging.routes.ts       # 메시징 API
-│   │   └── dlr.webhook.ts           # 배달 결과 수신
-│   └── app.ts                       # Express 앱 설정
-├── tools/
-│   ├── SmsTool.ts                   # SMS/LMS/MMS 발송
-│   ├── ExcelTool.ts                 # 범용 엑셀 처리
-│   └── StudentExcelTool.ts          # 학생 데이터 전용
-├── utils/
-│   └── nlp.ts                       # 자연어 파라미터 추출
-└── main.ts                          # 터미널 대화용 (개발/테스트)
-```
-
 ## 🎯 사용 예시
 ### SMS 발송
 ```
@@ -165,6 +147,5 @@ src/
 
 ## 📄 라이선스
 이 프로젝트는 MIT License 하에 배포됩니다.
-
 
 **Made with using Agentica AI**
