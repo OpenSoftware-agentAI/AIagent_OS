@@ -1,0 +1,101 @@
+{
+  "name": "aiagent_os",
+  "version": "1.0.0",
+  "description": "2025오픈소스 개발자대회 출품작",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node src/app/server.ts",
+    "dev:legacy": "cross-env NODE_OPTIONS=--no-deprecation ts-node src/main.ts",
+    "build": "tsc",
+    "start": "node dist/app/server.js",
+    "start:dev": "cross-env NODE_OPTIONS=--no-deprecation ts-node src/main.ts",
+    "read-daily-test": "cross-env NODE_OPTIONS=--no-deprecation ts-node src/readDailyTest.ts",
+    "prepare": "ts-patch install",
+    "test": "echo \"테스트 추후 구현\" && exit 0",
+    "test:api": "echo \"API 테스트: curl localhost:3000/health\" && curl -s localhost:3000/health || echo 'API 테스트 - 서버가 실행 중이지 않을 수 있습니다'",
+    "docs": "echo \"API 문서: http://localhost:3000/api-docs\"",
+    "migration:info": "echo \"마이그레이션 완료: 통합 AI 시스템 사용 중\"",
+    "clean": "rm -rf dist uploads/* generated/*"
+  },
+  "license": "ISC",
+  "author": "Toribossamdan(토리보쌈단)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/AIagent_OS"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "AI",
+    "교육",
+    "비서",
+    "학생관리",
+    "SMS",
+    "파일분석",
+    "오픈소스",
+    "agentica",
+    "typescript",
+    "express"
+  ],
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.4",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^24.9.1",
+    "@types/node-fetch": "^2.6.13",
+    "@types/serve-static": "^2.2.0",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
+    "@types/xlsx": "^0.0.36",
+    "cross-env": "^10.0.0",
+    "live-server": "^1.2.2",
+    "prisma": "^6.17.1",
+    "ts-node": "^10.9.2",
+    "ts-patch": "^3.3.0",
+    "typescript": "~5.9.2"
+  },
+  "dependencies": {
+    "@agentica/core": "^0.30.8",
+    "@prisma/client": "^6.17.1",
+    "@prisma/extension-accelerate": "^2.0.2",
+    "@samchon/openapi": "^4.7.1",
+    "@types/cors": "^2.8.19",
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "csv-parse": "^6.1.0",
+    "dotenv": "^17.2.1",
+    "exceljs": "^4.4.0",
+    "express": "^5.1.0",
+    "multer": "^2.0.2",
+    "nanoid": "^5.1.6",
+    "node-fetch": "^3.3.2",
+    "openai": "^5.12.0",
+    "pdf-parse": "^2.1.7",
+    "pg": "^8.16.3",
+    "puppeteer": "^24.16.2",
+    "sharp": "^0.34.4",
+    "socket.io": "^4.8.1",
+    "solapi": "^5.5.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "typia": "^9.7.2",
+    "xlsx": "^0.18.5"
+  },
+  "config": {
+    "migration": {
+      "status": "completed",
+      "version": "unified-v1.0.0",
+      "features": [
+        "통합 AI 서비스",
+        "자동 CSV 처리",
+        "학생 관리 시스템",
+        "SMS 통합 발송",
+        "파일 분석 API",
+        "Swagger 문서화",
+        "실시간 WebSocket 채팅"
+      ]
+    }
+  }
+}
