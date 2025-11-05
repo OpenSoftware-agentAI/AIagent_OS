@@ -2,7 +2,7 @@
 
 ## 🧭 Overview
 
-> **Agentica**는 **AI 기반 대화형 시스템**으로,  
+> **Agentica**는 **AI 채팅 어플리케이션 서비스**로,  
 > 자연어 대화만으로 학원 데스크의 반복적인 행정 업무를 자동화합니다.  
 > 복잡한 설정이나 별도의 학습 과정 없이 **직관적인 웹 인터페이스**를 통해 누구나 쉽게 사용할 수 있으며,  
 > AI가 빠르고 정확하게 처리하여 **업무 효율성을 극대화**합니다.
@@ -23,9 +23,13 @@
 
 > **Status:** 🚀 **Operational (Live Service Running)**
 
-Agentica는 현재 **실제 학원 환경에서 운영 중**이며,  
-AI 기반 대화형 시스템을 통해 **데스크 업무 자동화 및 피드백 생성** 기능을 제공합니다.  
-주요 기능은 안정적으로 동작하고 있으며, 사용자 피드백을 기반으로 **지속적인 고도화 작업**이 진행되고 있습니다.
+Agentica는 현재 **실제 학원 환경에서 사용 중**이며,  
+AI 기반 대화형 시스템을 통해 **데스크 업무 자동화 및 피드백 생성** 을 중심으로 다양한 기능을 제공합니다.  
+주요 기능은 안정적으로 동작하고 있으며, 사용자 피드백을 기반으로 **지속적인 기능 추가 및 리팩토링 작업**이 진행되고 있습니다.
+
+실사례를 참고하여 일부 기능들이 작성되었습니다. 
+학원의 저작권 보호를 위하여 학원 업무와 관련된 코드 및 문서들은 비공개 처리 및 주석처리되었습니다. 
+비공개 처리된 파일의 자세한 위치는 BE/gitignore을 참고해주세요 
 
 ---
 
@@ -67,9 +71,57 @@ AI 기반 대화형 시스템을 통해 **데스크 업무 자동화 및 피드�
 
 ### 🔧 지속 개선 중인 항목
 
-- 피드백 표현 다양화 (톤/스타일 선택 기능)
-- 외부 학원 관리 시스템 연동 기능
+- [ ] 피드백 표현 다양화 (톤/스타일 선택 기능)
+- [ ] 외부 학원 관리 시스템 연동 기능
+- [ ] 카카오 후속 메시지 API 연동 (백그라운드 결과 실시간 전달)
+- [ ] 다중 수신자 처리 UX 개선
+- [ ] 파일 업로드 전용 블록 UX 고도화
 
+
+---
+## 🛠 기술 스택
+- **Language**: TypeScript (ES2016)
+- **Runtime**: Node.js + Express
+- **AI Engine**: Agentica AI (LLM 기반 의도 해석·도구 선택)
+- **Tools**: SmsTool, ExcelTool, StudentExcelTool (typia 스키마)
+- **Platform**: 카카오 비즈니스 챗봇 (단일 시나리오·블록·스킬)
+- **External APIs**: 메시징 API (SMS/LMS/MMS), 파일 처리
+- **Infrastructure**: 환경변수 설정, 정적 파일 서빙, 헬스체크
+
+## 🏗 시스템 아키텍처
+```
+[사용자 (카카오톡)]
+        ↓
+[카카오 챗봇 관리자센터]
+├─ 웰컴 블록 (고정)
+├─ 폴백 블록 (고정)  
+├─ 탈출 블록 (고정)
+└─ 메인 담화 블록 (단일 시나리오)
+   ├─ 시스템 엔티티: @sys.text, @sys.url, @sys.image.url
+   └─ 스킬: POST /webhook
+        ↓
+[Express 서버]
+├─ Fast Response (≤2.5s)
+│  ├─ 간단 질의 → 즉시 응답
+│  └─ 복잡한 작업 → "접수" 응답
+│
+└─ Background Worker
+   ├─ 파라미터 결합
+   │  ├─ 시스템 엔티티 우선
+   │  ├─ NLP 정규식 보정
+   │  └─ LLM 해석 보완
+   │
+   ├─ [Agentica AI]
+   │  └─ 컨트롤러 실행
+   │     ├─ SmsTool
+   │     ├─ ExcelTool  
+   │     └─ StudentExcelTool
+   │
+   └─ 결과 처리
+      ├─ 파일 생성 (/downloads)
+      ├─ 로깅
+      └─ 중복 방지 (10초)
+```
 ---
 
 ### **📝 How to Build**
@@ -142,3 +194,18 @@ https://tory-edumate.netlify.app/
 [![Socket.IO](https://img.shields.io/badge/Socket.IO-4.7-lightgrey?logo=socket.io)](https://socket.io/)  
 [![npm](https://img.shields.io/badge/npm-9.8-red?logo=npm)](https://www.npmjs.com/)
 
+
+
+## 📄 라이선스 License
+이 프로젝트는 ISC License 하에 배포됩니다.
+
+This project is distributed under the **ISC License**.
+See the [LICENSE.txt](./LICENSE.txt) file for details.
+
+## 🔍 오픈소스 고지
+본 프로젝트에서 사용된 모든 오픈소스 라이브러리의 라이선스 정보는 [NOTICES.md](./NOTICES.md) 파일을 참조하세요.
+
+**Made with using Agentica AI**
+---
+
+© 2025 Toribossamdan(토리보쌈단). ISC License.
